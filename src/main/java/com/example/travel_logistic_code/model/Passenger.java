@@ -10,14 +10,13 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name ="drivers")
-public class Driver {
+@Table(name ="passengers")
+public class Passenger {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idPassenger;
 
     private String name;
     private String lastName;
-    private String driverLicense;
 }
