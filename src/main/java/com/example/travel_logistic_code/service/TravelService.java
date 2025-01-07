@@ -9,7 +9,7 @@ public interface TravelService  {
 
     TravelResponseDTO save (TravelRequestDTO travelRequestDTO);
     List<TravelResponseDTO> getAll ();
-    TravelResponseDTO get (Long id);
+    TravelResponseDTO getById (Long id);
     TravelResponseDTO update (TravelResponseDTO travelResponseDTO, Long id);
     void delete (Long id);
 
