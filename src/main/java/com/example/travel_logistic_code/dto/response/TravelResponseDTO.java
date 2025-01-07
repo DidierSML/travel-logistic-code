@@ -8,7 +8,6 @@ public record TravelResponseDTO (VehicleResponseDTO vehicleInfo,
                                  PassengerResponseDTO passengerInfo,
                                  Day dayOfService,
 
-                                 MessageConfirmation messageConfirmation
+                                 MessageConfirmation messageConfirmation) {
 
-                                 ) {
 }
