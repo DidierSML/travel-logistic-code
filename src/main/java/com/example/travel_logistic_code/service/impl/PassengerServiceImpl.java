@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -47,22 +48,65 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public List<PassengerResponseDTO> getAll() {
 
-        return null;
+        List<Passenger> existingPassengers = passengerRepository.findAll();
+        List<PassengerResponseDTO> responseList = new ArrayList<>();
+
+        for(Passenger passenger: existingPassengers){
+
+            PassengerResponseDTO passengerResponseDTO = new PassengerResponseDTO
+                    (
+                            passenger.getId(),
+                            passenger.getName(),
+                            passenger.getLastName()
+                    );
+
+            responseList.add(passengerResponseDTO);
+        }
+
+        return responseList;
     }
 
     @Override
     public PassengerResponseDTO getById(Long id) {
-        return null;
+
+        Passenger existingPassenger = passengerRepository.findById(id).
+                orElseThrow(()-> new NoSuchElementException("Passenger with id:" + id + " does not exist in our System"));
+
+        return new PassengerResponseDTO
+                (
+                        existingPassenger.getId(),
+                        existingPassenger.getName(),
+                        existingPassenger.getLastName()
+                );
+
     }
 
     @Transactional
     @Override
     public PassengerResponseDTO update(PassengerRequestDTO passengerRequestDTO, Long id) {
-        return null;
+
+        Passenger existingPassenger = passengerRepository.findById(id).
+                orElseThrow(()-> new NoSuchElementException("Passenger with id:" + id + " does not exist in our System"));
+
+        existingPassenger.setName(passengerRequestDTO.name());
+        existingPassenger.setLastName(passengerRequestDTO.lastName());
+
+        passengerRepository.save(existingPassenger);
+
+        return new PassengerResponseDTO
+                (
+                        existingPassenger.getId(),
+                        existingPassenger.getName(),
+                        existingPassenger.getLastName()
+                );
     }
 
     @Override
     public void delete(Long id) {
 
+        passengerRepository.findById(id).
+                orElseThrow(()-> new NoSuchElementException("Passenger with id:" + id + " does not exist in our System"));
+
+        passengerRepository.deleteById(id);
     }
 }
