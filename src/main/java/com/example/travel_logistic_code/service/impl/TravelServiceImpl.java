@@ -95,17 +95,68 @@ public class TravelServiceImpl implements TravelService {
 
     @Override
     public TravelResponseDTO getById(Long id) {
-        return null;
+
+        Travel existingTravel = travelRepository.findById(id)
+                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage()));
+
+        return new TravelResponseDTO
+                (
+                        existingTravel.getIdTravel(),
+                        existingTravel.getVehicle().getBrand(),
+                        existingTravel.getDriver().getName(),
+                        existingTravel.getPassenger().getName(),
+                        existingTravel.getDayOfService().toString(),
+                        MessageConfirmation.TRAVEL_FETCH_SUCCESS
+                );
+
     }
 
     @Transactional
     @Override
-    public TravelResponseDTO update(TravelResponseDTO travelResponseDTO, Long id) {
-        return null;
+    public TravelResponseDTO update(TravelRequestDTO travelRequestDTO, Long id) {
+
+        travelRepository.findById(id)
+                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage()));
+
+        Vehicle existingVehicle = vehicleRepository.findById(travelRequestDTO.vehicleId())
+                .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.vehicleId()));
+
+        Driver existingDriver = driverRepository.findById(travelRequestDTO.driverId())
+                .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.driverId()));
+
+        Passenger existingPassenger = passengerRepository.findById(travelRequestDTO.passengerId())
+                .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.passengerId()));
+
+
+        Travel modifyingTravel = new Travel();
+
+        modifyingTravel.setVehicle(existingVehicle);
+        modifyingTravel.setDriver(existingDriver);
+        modifyingTravel.setPassenger(existingPassenger);
+        modifyingTravel.setDayOfService(Day.valueOf(travelRequestDTO.dayOfService()));
+
+        Travel updatedTravel = travelRepository.save(modifyingTravel);
+
+        return new TravelResponseDTO
+                (
+                        updatedTravel.getIdTravel(),
+                        updatedTravel.getVehicle().getBrand(),
+                        updatedTravel.getDriver().getName(),
+                        updatedTravel.getPassenger().getName(),
+                        updatedTravel.getDayOfService().toString(),
+                        MessageConfirmation.TRAVEL_UPDATED
+
+                );
+
     }
 
     @Override
     public void delete(Long id) {
+
+        travelRepository.findById(id)
+                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage()));
+
+        travelRepository.deleteById(id);
 
     }
 }

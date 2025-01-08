@@ -2,7 +2,6 @@ package com.example.travel_logistic_code.service;
 
 import com.example.travel_logistic_code.dto.request.DriverRequestDTO;
 import com.example.travel_logistic_code.dto.response.DriverResponseDTO;
-import com.example.travel_logistic_code.model.Driver;
 
 import java.util.List;
 
