@@ -5,8 +5,10 @@ import com.example.travel_logistic_code.dto.response.VehicleResponseDTO;
 import com.example.travel_logistic_code.service.VehicleService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/vehicle")
@@ -15,10 +17,42 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public VehicleResponseDTO save (@Valid VehicleRequestDTO vehicleRequestDTO){
 
         return vehicleService.save(vehicleRequestDTO);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<VehicleResponseDTO> getAll (){
+
+        return vehicleService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public VehicleResponseDTO getById (@PathVariable (value = "id") Long id){
+
+        return vehicleService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public VehicleResponseDTO update (@Valid VehicleRequestDTO vehicleRequestDTO,
+                                      @PathVariable (value = "id") Long id){
+
+        return vehicleService.update(vehicleRequestDTO,id);
+
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete (@PathVariable (value = "id") Long id){
+
+        vehicleService.delete(id);
+
+    }
 
 }
