@@ -12,10 +12,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/driver")
-@AllArgsConstructor
 public class DriverController {
 
     private final DriverService driverService;
+
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,7 +41,7 @@ public class DriverController {
         return driverService.getById(id);
     }
 
-    @GetMapping("/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DriverResponseDTO update (@Valid DriverRequestDTO driverRequestDTO,
                                      @PathVariable (value = "id") Long id){

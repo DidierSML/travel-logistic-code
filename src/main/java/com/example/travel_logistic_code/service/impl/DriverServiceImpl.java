@@ -14,10 +14,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@AllArgsConstructor
 public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
+
+    public DriverServiceImpl(DriverRepository driverRepository){
+        this.driverRepository = driverRepository;
+    }
 
     @Transactional
     @Override
@@ -25,14 +28,9 @@ public class DriverServiceImpl implements DriverService {
 
         Driver newDriver = new Driver();
 
-        newDriver.setId(driverRequestDTO.driverId());
         newDriver.setName(driverRequestDTO.name());
         newDriver.setLastName(driverRequestDTO.lastName());
-        newDriver.setDriverLicense(newDriver.getDriverLicense());
-
-        if(driverRepository.existsById(newDriver.getId())){
-            throw new NoSuchElementException("Driver with id:" + newDriver.getId() + " already exists in our System");
-        }
+        newDriver.setDriverLicense(driverRequestDTO.driverLicense());
 
         driverRepository.save(newDriver);
 
