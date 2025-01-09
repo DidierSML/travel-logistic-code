@@ -1,10 +1,9 @@
 package com.example.travel_logistic_code.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record DriverRequestDTO(
-                               @NotBlank Long driverId,
-                               @NotBlank String name,
-                               @NotBlank String lastName,
-                               @NotBlank String driverLicense) {
+                               @NotNull String name,
+                               @NotNull String lastName,
+                               @NotNull String driverLicense) {
 }

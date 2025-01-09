@@ -13,11 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/travel")
-@AllArgsConstructor
 public class TravelController {
 
     private final TravelService travelService;
-    private final PassengerService passengerService;
+
+    public TravelController(TravelService travelService) {
+        this.travelService = travelService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -40,7 +42,7 @@ public class TravelController {
         return travelService.getById(id);
     }
 
-    @GetMapping("/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TravelResponseDTO update (@Valid TravelRequestDTO travelRequestDTO,
                                      @PathVariable (value = "id") Long id){

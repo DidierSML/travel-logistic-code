@@ -12,10 +12,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vehicle")
-@AllArgsConstructor
 public class VehicleController {
 
     private final VehicleService vehicleService;
+
+    public VehicleController(VehicleService vehicleService) {
+        this.vehicleService = vehicleService;
+    }
+
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

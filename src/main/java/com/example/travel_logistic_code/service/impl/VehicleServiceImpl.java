@@ -14,10 +14,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@AllArgsConstructor
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
+
+    public VehicleServiceImpl(VehicleRepository vehicleRepository){
+        this.vehicleRepository = vehicleRepository;
+    }
 
     @Transactional
     @Override
@@ -25,7 +28,6 @@ public class VehicleServiceImpl implements VehicleService {
 
         Vehicle newVehicle = new Vehicle();
 
-        newVehicle.setId(vehicleRequestDTO.vehicleId());
         newVehicle.setBrand(vehicleRequestDTO.brand());
         newVehicle.setColor(vehicleRequestDTO.color());
         newVehicle.setLicensePlate(vehicleRequestDTO.licensePlate());

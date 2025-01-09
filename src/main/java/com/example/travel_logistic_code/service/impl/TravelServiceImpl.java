@@ -20,14 +20,21 @@ import java.util.NoSuchElementException;
 import static com.example.travel_logistic_code.model.MessageConfirmation.TRAVEL_NOT_FOUND;
 
 @Service
-@AllArgsConstructor
 public class TravelServiceImpl implements TravelService {
-
 
     private final VehicleRepository vehicleRepository;
     private final DriverRepository driverRepository;
     private final PassengerRepository passengerRepository;
     private final TravelRepository travelRepository;
+
+
+    public TravelServiceImpl(VehicleRepository vehicleRepository, DriverRepository driverRepository,
+                             PassengerRepository passengerRepository, TravelRepository travelRepository){
+        this.vehicleRepository = vehicleRepository;
+        this.driverRepository = driverRepository;
+        this.passengerRepository = passengerRepository;
+        this.travelRepository = travelRepository;
+    }
 
     @Transactional
     @Override
@@ -72,7 +79,7 @@ public class TravelServiceImpl implements TravelService {
         List<TravelResponseDTO> responseList = new ArrayList<>();
 
         if(travelList.isEmpty()){
-            throw new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage());
+            throw new NoSuchElementException("There are no trips registered in your system yet");
         }
 
         for(Travel travel: travelList){

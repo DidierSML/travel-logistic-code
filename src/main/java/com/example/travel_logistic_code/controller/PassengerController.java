@@ -4,7 +4,6 @@ import com.example.travel_logistic_code.dto.request.PassengerRequestDTO;
 import com.example.travel_logistic_code.dto.response.PassengerResponseDTO;
 import com.example.travel_logistic_code.service.PassengerService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +11,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/passenger")
-@AllArgsConstructor
 public class PassengerController {
 
     private final PassengerService passengerService;
+
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,7 +41,7 @@ public class PassengerController {
         return passengerService.getById(id);
     }
 
-    @GetMapping("/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PassengerResponseDTO update (@Valid PassengerRequestDTO passengerRequestDTO,
                                         @PathVariable (value = "id") Long id){
