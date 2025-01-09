@@ -2,10 +2,8 @@ package com.example.travel_logistic_code.controller;
 
 import com.example.travel_logistic_code.dto.request.TravelRequestDTO;
 import com.example.travel_logistic_code.dto.response.TravelResponseDTO;
-import com.example.travel_logistic_code.service.PassengerService;
 import com.example.travel_logistic_code.service.TravelService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

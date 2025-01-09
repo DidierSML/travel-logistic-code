@@ -32,6 +32,10 @@ public class DriverServiceImpl implements DriverService {
         newDriver.setLastName(driverRequestDTO.lastName());
         newDriver.setDriverLicense(driverRequestDTO.driverLicense());
 
+        if(driverRepository.existsByDriverLicense(newDriver.getDriverLicense())){
+            throw new NoSuchElementException("Driver with license:" + newDriver.getDriverLicense() + " already exists in our System");
+        }
+
         driverRepository.save(newDriver);
 
         return new DriverResponseDTO

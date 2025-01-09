@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,4 +56,16 @@ public class Driver {
     }
 
 
+    //Equals&HashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Driver driver)) return false;
+        return Objects.equals(getDriverLicense(), driver.getDriverLicense());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDriverLicense());
+    }
 }
