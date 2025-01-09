@@ -33,7 +33,7 @@ public class VehicleServiceImpl implements VehicleService {
         newVehicle.setSeats(vehicleRequestDTO.seats());
 
         if(vehicleRepository.existsByLicensePlate(newVehicle.getLicensePlate())){
-            throw new NoSuchElementException("Vehicle with id:" + newVehicle.getLicensePlate() + " already exists in our System");
+            throw new NoSuchElementException("Vehicle with license:" + newVehicle.getLicensePlate() + " already exists in our System");
         }
 
         vehicleRepository.save(newVehicle);
