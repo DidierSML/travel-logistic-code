@@ -24,7 +24,7 @@ public class VehicleController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public VehicleResponseDTO save (@Valid VehicleRequestDTO vehicleRequestDTO){
+    public VehicleResponseDTO save (@Valid @RequestBody VehicleRequestDTO vehicleRequestDTO){
 
         return vehicleService.save(vehicleRequestDTO);
     }
@@ -45,7 +45,7 @@ public class VehicleController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public VehicleResponseDTO update (@Valid VehicleRequestDTO vehicleRequestDTO,
+    public VehicleResponseDTO update (@Valid @RequestBody VehicleRequestDTO vehicleRequestDTO,
                                       @PathVariable (value = "id") Long id){
 
         return vehicleService.update(vehicleRequestDTO,id);

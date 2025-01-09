@@ -23,7 +23,7 @@ public class TravelController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TravelResponseDTO save (@Valid TravelRequestDTO travelRequestDTO){
+    public TravelResponseDTO save (@Valid @RequestBody TravelRequestDTO travelRequestDTO){
 
         return travelService.save(travelRequestDTO);
     }
@@ -44,7 +44,7 @@ public class TravelController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TravelResponseDTO update (@Valid TravelRequestDTO travelRequestDTO,
+    public TravelResponseDTO update (@Valid @RequestBody TravelRequestDTO travelRequestDTO,
                                      @PathVariable (value = "id") Long id){
 
         return travelService.update(travelRequestDTO,id);

@@ -5,7 +5,6 @@ import com.example.travel_logistic_code.dto.response.VehicleResponseDTO;
 import com.example.travel_logistic_code.model.Vehicle;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.VehicleService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +32,8 @@ public class VehicleServiceImpl implements VehicleService {
         newVehicle.setLicensePlate(vehicleRequestDTO.licensePlate());
         newVehicle.setSeats(vehicleRequestDTO.seats());
 
-        if(vehicleRepository.existsById(newVehicle.getId())){
-            throw new NoSuchElementException("Vehicle with id:" + newVehicle.getId() + " already exists in our System");
+        if(vehicleRepository.existsByLicensePlate(newVehicle.getLicensePlate())){
+            throw new NoSuchElementException("Vehicle with id:" + newVehicle.getLicensePlate() + " already exists in our System");
         }
 
         vehicleRepository.save(newVehicle);
@@ -61,12 +60,11 @@ public class VehicleServiceImpl implements VehicleService {
 
             VehicleResponseDTO vehicleResponseDTO = new VehicleResponseDTO
                     (
-                    vehicle.getId(),
-                    vehicle.getBrand(),
-                    vehicle.getColor(),
-                    vehicle.getSeats(),
-                    vehicle.getLicensePlate()
-
+                            vehicle.getId(),
+                            vehicle.getBrand(),
+                            vehicle.getColor(),
+                            vehicle.getLicensePlate(),
+                            vehicle.getSeats()
                     );
 
             responseList.add(vehicleResponseDTO);

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class Vehicle {
     private String brand;
     private String color;
     private String licensePlate;
-    private String seats;
+    private Integer seats;
 
     //Getters & Setters
     public Long getId() {
@@ -54,11 +56,24 @@ public class Vehicle {
         this.licensePlate = licensePlate;
     }
 
-    public String getSeats() {
+    public Integer getSeats() {
         return seats;
     }
 
-    public void setSeats(String seats) {
+    public void setSeats(Integer seats) {
         this.seats = seats;
+    }
+
+    //Equals & HashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vehicle vehicle)) return false;
+        return Objects.equals(getLicensePlate(), vehicle.getLicensePlate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLicensePlate());
     }
 }

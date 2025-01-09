@@ -22,7 +22,7 @@ public class DriverController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverResponseDTO save (@Valid DriverRequestDTO driverRequestDTO){
+    public DriverResponseDTO save (@Valid @RequestBody DriverRequestDTO driverRequestDTO){
 
         return driverService.save(driverRequestDTO);
     }
@@ -43,7 +43,7 @@ public class DriverController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DriverResponseDTO update (@Valid DriverRequestDTO driverRequestDTO,
+    public DriverResponseDTO update (@Valid @RequestBody DriverRequestDTO driverRequestDTO,
                                      @PathVariable (value = "id") Long id){
 
         return driverService.update(driverRequestDTO,id);

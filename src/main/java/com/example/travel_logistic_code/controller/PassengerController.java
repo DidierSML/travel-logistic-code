@@ -22,7 +22,7 @@ public class PassengerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PassengerResponseDTO save (@Valid PassengerRequestDTO passengerRequestDTO){
+    public PassengerResponseDTO save (@Valid @RequestBody PassengerRequestDTO passengerRequestDTO){
 
         return passengerService.save(passengerRequestDTO);
     }
@@ -43,7 +43,7 @@ public class PassengerController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PassengerResponseDTO update (@Valid PassengerRequestDTO passengerRequestDTO,
+    public PassengerResponseDTO update (@Valid @RequestBody PassengerRequestDTO passengerRequestDTO,
                                         @PathVariable (value = "id") Long id){
 
         return passengerService.update(passengerRequestDTO,id);
