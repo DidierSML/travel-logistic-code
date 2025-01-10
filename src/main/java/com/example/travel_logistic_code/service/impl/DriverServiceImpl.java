@@ -5,7 +5,6 @@ import com.example.travel_logistic_code.dto.response.DriverResponseDTO;
 import com.example.travel_logistic_code.model.Driver;
 import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.service.DriverService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

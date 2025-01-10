@@ -5,7 +5,6 @@ import com.example.travel_logistic_code.dto.response.PassengerResponseDTO;
 import com.example.travel_logistic_code.model.Passenger;
 import com.example.travel_logistic_code.repository.PassengerRepository;
 import com.example.travel_logistic_code.service.PassengerService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
