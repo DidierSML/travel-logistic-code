@@ -9,7 +9,6 @@ import com.example.travel_logistic_code.repository.PassengerRepository;
 import com.example.travel_logistic_code.repository.TravelRepository;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.TravelService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +64,9 @@ public class TravelServiceImpl implements TravelService {
                         savedTravel.getIdTravel(),
                         savedTravel.getVehicle().getBrand(),
                         savedTravel.getDriver().getName(),
+                        savedTravel.getDriver().getLastName(),
                         savedTravel.getPassenger().getName(),
+                        savedTravel.getPassenger().getLastName(),
                         savedTravel.getDayOfService().toString(),
                         MessageConfirmation.CONFIRMED_TRAVEL.getMessage()
                 );
@@ -89,7 +90,9 @@ public class TravelServiceImpl implements TravelService {
                             travel.getIdTravel(),
                             travel.getVehicle().getBrand(),
                             travel.getDriver().getName(),
+                            travel.getDriver().getLastName(),
                             travel.getPassenger().getName(),
+                            travel.getPassenger().getLastName(),
                             travel.getDayOfService().toString(),
                             MessageConfirmation.TRAVEL_FETCH_SUCCESS.getMessage()
                     );
@@ -111,7 +114,9 @@ public class TravelServiceImpl implements TravelService {
                         existingTravel.getIdTravel(),
                         existingTravel.getVehicle().getBrand(),
                         existingTravel.getDriver().getName(),
+                        existingTravel.getDriver().getLastName(),
                         existingTravel.getPassenger().getName(),
+                        existingTravel.getPassenger().getLastName(),
                         existingTravel.getDayOfService().toString(),
                         MessageConfirmation.TRAVEL_FETCH_SUCCESS.getMessage()
                 );
@@ -149,7 +154,9 @@ public class TravelServiceImpl implements TravelService {
                         updatedTravel.getIdTravel(),
                         updatedTravel.getVehicle().getBrand(),
                         updatedTravel.getDriver().getName(),
+                        updatedTravel.getDriver().getLastName(),
                         updatedTravel.getPassenger().getName(),
+                        updatedTravel.getPassenger().getLastName(),
                         updatedTravel.getDayOfService().toString(),
                         MessageConfirmation.TRAVEL_UPDATED.getMessage()
 
