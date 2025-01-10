@@ -9,6 +9,6 @@ public record TravelResponseDTO (
                                  String passengerName,
                                  String dayOfService,
 
-                                 MessageConfirmation messageConfirmation) {
+                                 String messageConfirmation) {
 
 }

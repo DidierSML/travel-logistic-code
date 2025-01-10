@@ -67,7 +67,7 @@ public class TravelServiceImpl implements TravelService {
                         savedTravel.getDriver().getName(),
                         savedTravel.getPassenger().getName(),
                         savedTravel.getDayOfService().toString(),
-                        MessageConfirmation.CONFIRMED_TRAVEL
+                        MessageConfirmation.CONFIRMED_TRAVEL.getMessage()
                 );
 
     }
@@ -91,7 +91,7 @@ public class TravelServiceImpl implements TravelService {
                             travel.getDriver().getName(),
                             travel.getPassenger().getName(),
                             travel.getDayOfService().toString(),
-                            MessageConfirmation.TRAVEL_FETCH_SUCCESS
+                            MessageConfirmation.TRAVEL_FETCH_SUCCESS.getMessage()
                     );
 
             responseList.add(travelResponseDTO);
@@ -113,7 +113,7 @@ public class TravelServiceImpl implements TravelService {
                         existingTravel.getDriver().getName(),
                         existingTravel.getPassenger().getName(),
                         existingTravel.getDayOfService().toString(),
-                        MessageConfirmation.TRAVEL_FETCH_SUCCESS
+                        MessageConfirmation.TRAVEL_FETCH_SUCCESS.getMessage()
                 );
 
     }
@@ -151,7 +151,7 @@ public class TravelServiceImpl implements TravelService {
                         updatedTravel.getDriver().getName(),
                         updatedTravel.getPassenger().getName(),
                         updatedTravel.getDayOfService().toString(),
-                        MessageConfirmation.TRAVEL_UPDATED
+                        MessageConfirmation.TRAVEL_UPDATED.getMessage()
 
                 );
 
