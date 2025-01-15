@@ -1,12 +1,12 @@
 package com.example.travel_logistic_code.dto.response;
 
-public record PassengerResponseDTO(
-                                   Long passengerId,
+public record UserResponseDTO(
+                                   Long userId,
                                    String fullName) {
 
     //Constructor Personalizado
-    public PassengerResponseDTO (Long passengerId, String name, String lastName) {
-        this(passengerId,fullName(name, lastName));
+    public UserResponseDTO(Long userId, String name, String lastName) {
+        this(userId,fullName(name, lastName));
     }
 
     //Método para concatenar

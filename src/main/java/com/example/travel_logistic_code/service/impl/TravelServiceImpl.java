@@ -5,7 +5,7 @@ import com.example.travel_logistic_code.dto.response.TravelResponseDTO;
 import com.example.travel_logistic_code.exception.TravelNotFoundException;
 import com.example.travel_logistic_code.model.*;
 import com.example.travel_logistic_code.repository.DriverRepository;
-import com.example.travel_logistic_code.repository.PassengerRepository;
+import com.example.travel_logistic_code.repository.UserRepository;
 import com.example.travel_logistic_code.repository.TravelRepository;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.TravelService;
@@ -23,15 +23,15 @@ public class TravelServiceImpl implements TravelService {
 
     private final VehicleRepository vehicleRepository;
     private final DriverRepository driverRepository;
-    private final PassengerRepository passengerRepository;
+    private final UserRepository userRepository;
     private final TravelRepository travelRepository;
 
 
     public TravelServiceImpl(VehicleRepository vehicleRepository, DriverRepository driverRepository,
-                             PassengerRepository passengerRepository, TravelRepository travelRepository){
+                             UserRepository userRepository, TravelRepository travelRepository){
         this.vehicleRepository = vehicleRepository;
         this.driverRepository = driverRepository;
-        this.passengerRepository = passengerRepository;
+        this.userRepository = userRepository;
         this.travelRepository = travelRepository;
     }
 
@@ -45,14 +45,14 @@ public class TravelServiceImpl implements TravelService {
         Driver existingDriver = driverRepository.findById(travelRequestDTO.driverId())
                 .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.driverId()));
 
-        Passenger existingPassenger = passengerRepository.findById(travelRequestDTO.passengerId())
+        User existingUser = userRepository.findById(travelRequestDTO.passengerId())
                 .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.passengerId()));
 
         //From RequestDTO to Entity
         Travel travel = new Travel();
         travel.setVehicle(existingVehicle);
         travel.setDriver(existingDriver);
-        travel.setPassenger(existingPassenger);
+        travel.setUser(existingUser);
         travel.setDayOfService(Day.valueOf(travelRequestDTO.dayOfService()));
 
         //Saving Entity
@@ -65,8 +65,8 @@ public class TravelServiceImpl implements TravelService {
                         savedTravel.getVehicle().getBrand(),
                         savedTravel.getDriver().getName(),
                         savedTravel.getDriver().getLastName(),
-                        savedTravel.getPassenger().getName(),
-                        savedTravel.getPassenger().getLastName(),
+                        savedTravel.getUser().getName(),
+                        savedTravel.getUser().getLastName(),
                         savedTravel.getDayOfService().toString(),
                         MessageConfirmation.CONFIRMED_TRAVEL.getMessage()
                 );
@@ -91,8 +91,8 @@ public class TravelServiceImpl implements TravelService {
                             travel.getVehicle().getBrand(),
                             travel.getDriver().getName(),
                             travel.getDriver().getLastName(),
-                            travel.getPassenger().getName(),
-                            travel.getPassenger().getLastName(),
+                            travel.getUser().getName(),
+                            travel.getUser().getLastName(),
                             travel.getDayOfService().toString(),
                             MessageConfirmation.TRAVEL_FETCH_SUCCESS.getMessage()
                     );
@@ -115,8 +115,8 @@ public class TravelServiceImpl implements TravelService {
                         existingTravel.getVehicle().getBrand(),
                         existingTravel.getDriver().getName(),
                         existingTravel.getDriver().getLastName(),
-                        existingTravel.getPassenger().getName(),
-                        existingTravel.getPassenger().getLastName(),
+                        existingTravel.getUser().getName(),
+                        existingTravel.getUser().getLastName(),
                         existingTravel.getDayOfService().toString(),
                         MessageConfirmation.TRAVEL_FETCH_SUCCESS.getMessage()
                 );
@@ -136,7 +136,7 @@ public class TravelServiceImpl implements TravelService {
         Driver existingDriver = driverRepository.findById(travelRequestDTO.driverId())
                 .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.driverId()));
 
-        Passenger existingPassenger = passengerRepository.findById(travelRequestDTO.passengerId())
+        User existingUser = userRepository.findById(travelRequestDTO.passengerId())
                 .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id:" + travelRequestDTO.passengerId()));
 
 
@@ -144,7 +144,7 @@ public class TravelServiceImpl implements TravelService {
 
         modifyingTravel.setVehicle(existingVehicle);
         modifyingTravel.setDriver(existingDriver);
-        modifyingTravel.setPassenger(existingPassenger);
+        modifyingTravel.setUser(existingUser);
         modifyingTravel.setDayOfService(Day.valueOf(travelRequestDTO.dayOfService()));
 
         Travel updatedTravel = travelRepository.save(modifyingTravel);
@@ -155,8 +155,8 @@ public class TravelServiceImpl implements TravelService {
                         updatedTravel.getVehicle().getBrand(),
                         updatedTravel.getDriver().getName(),
                         updatedTravel.getDriver().getLastName(),
-                        updatedTravel.getPassenger().getName(),
-                        updatedTravel.getPassenger().getLastName(),
+                        updatedTravel.getUser().getName(),
+                        updatedTravel.getUser().getLastName(),
                         updatedTravel.getDayOfService().toString(),
                         MessageConfirmation.TRAVEL_UPDATED.getMessage()
 
