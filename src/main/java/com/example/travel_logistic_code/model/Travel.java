@@ -19,7 +19,7 @@ public class Travel {
     @ManyToOne
     private Driver driver;
     @ManyToOne
-    private User user;
+    private Customer customer;
 
     private Day dayOfService;
 
@@ -49,12 +49,12 @@ public class Travel {
         this.driver = driver;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Day getDayOfService() {
