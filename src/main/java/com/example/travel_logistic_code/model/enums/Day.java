@@ -1,4 +1,4 @@
-package com.example.travel_logistic_code.model;
+package com.example.travel_logistic_code.model.enums;
 
 import lombok.Getter;
 

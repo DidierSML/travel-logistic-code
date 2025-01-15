@@ -2,8 +2,10 @@ package com.example.travel_logistic_code.service.impl;
 
 import com.example.travel_logistic_code.dto.request.TravelRequestDTO;
 import com.example.travel_logistic_code.dto.response.TravelResponseDTO;
+import com.example.travel_logistic_code.exception.MessageConfirmation;
 import com.example.travel_logistic_code.exception.TravelNotFoundException;
 import com.example.travel_logistic_code.model.*;
+import com.example.travel_logistic_code.model.enums.Day;
 import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.repository.CustomerRepository;
 import com.example.travel_logistic_code.repository.TravelRepository;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.example.travel_logistic_code.model.MessageConfirmation.TRAVEL_NOT_FOUND;
+import static com.example.travel_logistic_code.exception.MessageConfirmation.TRAVEL_NOT_FOUND;
 
 @Service
 public class TravelServiceImpl implements TravelService {

@@ -1,5 +1,6 @@
 package com.example.travel_logistic_code.model;
 
+import com.example.travel_logistic_code.model.enums.Day;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
