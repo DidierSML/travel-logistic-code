@@ -1,11 +1,11 @@
 package com.example.travel_logistic_code.dto.response;
 
-public record UserResponseDTO(
+public record CustomerResponseDTO(
                                    Long userId,
                                    String fullName) {
 
     //Constructor Personalizado
-    public UserResponseDTO(Long userId, String name, String lastName) {
+    public CustomerResponseDTO(Long userId, String name, String lastName) {
         this(userId,fullName(name, lastName));
     }
 
