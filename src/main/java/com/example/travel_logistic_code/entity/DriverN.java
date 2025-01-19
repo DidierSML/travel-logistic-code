@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Driver extends User {
+public class DriverN extends User {
 
     private String licenseNumber;
     private LocalDate licenseExpiryDate;
