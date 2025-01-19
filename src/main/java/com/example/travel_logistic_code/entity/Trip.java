@@ -1,9 +1,6 @@
 package com.example.travel_logistic_code.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -17,7 +14,11 @@ public class Trip {
     private LocalDate tripDate;
     private Double cost;
 
-    //private Client client;
+    @ManyToOne
+    private DriverN driverN;
 
-    //private VehicleN vehicle;
+    @ManyToOne
+    private Client client;
+
+    private VehicleN vehicle;
 }
