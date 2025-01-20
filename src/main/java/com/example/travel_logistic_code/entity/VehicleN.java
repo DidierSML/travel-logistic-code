@@ -13,8 +13,11 @@ public class VehicleN {
     private Long id;
 
     private String licensePlate;
-    private String model;
     private String brand;
+    private String model;
+    private int year;
+
+    private String color;
 
     @OneToMany(mappedBy = "vehicle")
     private List<Trip> trips = new ArrayList<>();
