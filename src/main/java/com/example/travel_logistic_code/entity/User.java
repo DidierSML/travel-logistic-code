@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name ="users")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
     @Id
