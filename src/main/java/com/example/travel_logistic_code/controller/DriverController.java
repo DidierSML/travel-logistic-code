@@ -1,10 +1,9 @@
 package com.example.travel_logistic_code.controller;
 
-import com.example.travel_logistic_code.dto.request.DriverRequestDTO;
-import com.example.travel_logistic_code.dto.response.DriverResponseDTO;
+import com.example.travel_logistic_code.dto.request.DriverRequest;
+import com.example.travel_logistic_code.dto.response.DriverResponse;
 import com.example.travel_logistic_code.service.DriverService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,31 +21,31 @@ public class DriverController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverResponseDTO save (@Valid @RequestBody DriverRequestDTO driverRequestDTO){
+    public DriverResponse save (@Valid @RequestBody DriverRequest driverRequest){
 
-        return driverService.save(driverRequestDTO);
+        return driverService.save(driverRequest);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<DriverResponseDTO> getAll (){
+    public List<DriverResponse> getAll (){
 
         return driverService.getAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DriverResponseDTO getById (@PathVariable (value = "id") Long id){
+    public DriverResponse getById (@PathVariable (value = "id") Long id){
 
         return driverService.getById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public DriverResponseDTO update (@Valid @RequestBody DriverRequestDTO driverRequestDTO,
-                                     @PathVariable (value = "id") Long id){
+    public DriverResponse update (@Valid @RequestBody DriverRequest driverRequest,
+                                  @PathVariable (value = "id") Long id){
 
-        return driverService.update(driverRequestDTO,id);
+        return driverService.update(driverRequest,id);
     }
 
     @DeleteMapping("/{id}")

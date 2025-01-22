@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>travel-logistic-code</artifactId>
+	<artifactId>reservation-logistic-code</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>travel-logistic-code</name>
+	<name>reservation-logistic-code</name>
 	<description>Project that integrates spring security and oauth2</description>
 	<url/>
 	<licenses>
@@ -52,6 +52,7 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -97,6 +98,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.36</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

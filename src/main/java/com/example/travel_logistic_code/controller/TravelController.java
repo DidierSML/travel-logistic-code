@@ -1,8 +1,8 @@
 package com.example.travel_logistic_code.controller;
 
-import com.example.travel_logistic_code.dto.request.TravelRequestDTO;
-import com.example.travel_logistic_code.dto.response.TravelResponseDTO;
-import com.example.travel_logistic_code.service.TravelService;
+import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.response.ReservationResponse;
+import com.example.travel_logistic_code.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,48 +10,48 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/travel")
+@RequestMapping("/api/reservation")
 public class TravelController {
 
-    private final TravelService travelService;
+    private final ReservationService reservationService;
 
-    public TravelController(TravelService travelService) {
-        this.travelService = travelService;
+    public TravelController(ReservationService reservationService) {
+        this.reservationService = reservationService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TravelResponseDTO save (@Valid @RequestBody TravelRequestDTO travelRequestDTO){
+    public ReservationResponse save (@Valid @RequestBody ReservationRequest reservationRequest){
 
-        return travelService.save(travelRequestDTO);
+        return reservationService.save(reservationRequest);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<TravelResponseDTO> getAll (){
+    public List<ReservationResponse> getAll (){
 
-        return travelService.getAll();
+        return reservationService.getAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TravelResponseDTO getById (@PathVariable (value = "id") Long id){
+    public ReservationResponse getById (@PathVariable (value = "id") Long id){
 
-        return travelService.getById(id);
+        return reservationService.getById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TravelResponseDTO update (@Valid @RequestBody TravelRequestDTO travelRequestDTO,
-                                     @PathVariable (value = "id") Long id){
+    public ReservationResponse update (@Valid @RequestBody ReservationRequest reservationRequest,
+                                       @PathVariable (value = "id") Long id){
 
-        return travelService.update(travelRequestDTO,id);
+        return reservationService.update(reservationRequest,id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete (@PathVariable (value = "id") Long id){
 
-        travelService.delete(id);
+        reservationService.delete(id);
     }
 }

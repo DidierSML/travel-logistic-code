@@ -1,12 +1,18 @@
 package com.example.travel_logistic_code.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-public class VehicleN {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "vehicles")
+public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +38,16 @@ public class VehicleN {
 
     @OneToMany(mappedBy = "vehicle")
     private List<Reservation> reservations = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vehicle vehicle)) return false;
+        return Objects.equals(getLicensePlate(), vehicle.getLicensePlate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLicensePlate());
+    }
 }

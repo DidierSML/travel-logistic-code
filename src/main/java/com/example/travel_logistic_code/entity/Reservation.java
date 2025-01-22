@@ -2,10 +2,18 @@ package com.example.travel_logistic_code.entity;
 
 import com.example.travel_logistic_code.entity.enums.ReservationStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name ="reservations")
 public class Reservation {
 
     @Id
@@ -29,7 +37,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private DriverN driverN;
+    private Driver driver;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -37,5 +45,5 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private VehicleN vehicle;
+    private Vehicle vehicle;
 }
