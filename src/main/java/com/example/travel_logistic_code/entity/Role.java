@@ -1,11 +1,14 @@
-package com.example.travel_logistic_code.model;
+package com.example.travel_logistic_code.entity;
 
-import com.example.travel_logistic_code.model.enums.RoleName;
+import com.example.travel_logistic_code.entity.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name ="roles")
@@ -16,8 +19,6 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true, nullable = false)
-    private RoleName roleName;
-
-
+    @Column(nullable = false,unique = true)
+    private RoleType roleName;
 }

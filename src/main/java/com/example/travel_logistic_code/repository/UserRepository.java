@@ -1,9 +1,12 @@
 package com.example.travel_logistic_code.repository;
 
-import com.example.travel_logistic_code.model.Travel;
+import com.example.travel_logistic_code.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 @Repository
-public interface TravelRepository extends JpaRepository<Travel,Long> {
+public interface UserRepository extends JpaRepository <User,Long> {
+
+
 }

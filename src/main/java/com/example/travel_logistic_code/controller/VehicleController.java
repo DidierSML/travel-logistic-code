@@ -1,7 +1,7 @@
 package com.example.travel_logistic_code.controller;
 
-import com.example.travel_logistic_code.dto.request.VehicleRequestDTO;
-import com.example.travel_logistic_code.dto.response.VehicleResponseDTO;
+import com.example.travel_logistic_code.dto.request.VehicleRequest;
+import com.example.travel_logistic_code.dto.response.VehicleResponse;
 import com.example.travel_logistic_code.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -25,15 +25,15 @@ public class VehicleController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public VehicleResponseDTO save (@Valid @RequestBody VehicleRequestDTO vehicleRequestDTO){
+    public VehicleResponse save (@Valid @RequestBody VehicleRequest vehicleRequest){
 
-        return vehicleService.save(vehicleRequestDTO);
+        return vehicleService.save(vehicleRequest);
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleResponseDTO> getAll (){
+    public List<VehicleResponse> getAll (){
 
         return vehicleService.getAll();
     }
@@ -41,7 +41,7 @@ public class VehicleController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ResponseStatus(HttpStatus.OK)
-    public VehicleResponseDTO getById (@PathVariable (value = "id") Long id){
+    public VehicleResponse getById (@PathVariable (value = "id") Long id){
 
         return vehicleService.getById(id);
     }
@@ -49,10 +49,10 @@ public class VehicleController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
-    public VehicleResponseDTO update (@Valid @RequestBody VehicleRequestDTO vehicleRequestDTO,
-                                      @PathVariable (value = "id") Long id){
+    public VehicleResponse update (@Valid @RequestBody VehicleRequest vehicleRequest,
+                                   @PathVariable (value = "id") Long id){
 
-        return vehicleService.update(vehicleRequestDTO,id);
+        return vehicleService.update(vehicleRequest, id);
 
     }
 

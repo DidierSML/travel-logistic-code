@@ -1,13 +1,15 @@
 package com.example.travel_logistic_code.service.impl;
 
-import com.example.travel_logistic_code.dto.request.DriverRequestDTO;
-import com.example.travel_logistic_code.dto.response.DriverResponseDTO;
-import com.example.travel_logistic_code.model.Driver;
+import com.example.travel_logistic_code.dto.request.DriverRequest;
+import com.example.travel_logistic_code.dto.response.DriverResponse;
+import com.example.travel_logistic_code.dto.request.UserRequest;
+import com.example.travel_logistic_code.entity.Driver;
 import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.service.DriverService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,86 +25,107 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     @Override
-    public DriverResponseDTO save(DriverRequestDTO driverRequestDTO) {
+    public DriverResponse save (DriverRequest driverRequest) {
 
         Driver newDriver = new Driver();
+        UserRequest userRequest = driverRequest.userRequest();//Composición
 
-        newDriver.setName(driverRequestDTO.name());
-        newDriver.setLastName(driverRequestDTO.lastName());
-        newDriver.setDriverLicense(driverRequestDTO.driverLicense());
+        newDriver.setName(userRequest.name());
+        newDriver.setLastName(userRequest.lastName());
+        newDriver.setEmail(userRequest.email());
+        newDriver.setPassword(userRequest.password());
 
-        if(driverRepository.existsByDriverLicense(newDriver.getDriverLicense())){
-            throw new NoSuchElementException("Driver with license:" + newDriver.getDriverLicense() + " already exists in our System");
+        newDriver.setLicenseNumber(driverRequest.licenseNumber());
+        newDriver.setLicenseExpiryDate(LocalDate.parse(driverRequest.licenseExpiryDate()));
+
+
+        if(driverRepository.existsByLicenseNumber(newDriver.getLicenseNumber())){
+            throw new NoSuchElementException
+                    ("Driver with license:" + newDriver.getLicenseNumber() + " already exists in our System");
         }
 
         driverRepository.save(newDriver);
 
-        return new DriverResponseDTO
+        return new DriverResponse
                 (
-                    newDriver.getId(),
-                    newDriver.getName(),
-                    newDriver.getLastName(),
-                    newDriver.getDriverLicense()
+                        newDriver.getId(),
+                        newDriver.getName(),
+                        newDriver.getLastName(),
+                        newDriver.getEmail(),
+                        newDriver.getLicenseNumber(),
+                        newDriver.getLicenseExpiryDate().toString()
 
                 );
     }
 
     @Override
-    public List<DriverResponseDTO> getAll() {
+    public List<DriverResponse> getAll() {
 
         List<Driver> existingDrivers = driverRepository.findAll();
-        List<DriverResponseDTO> responseList = new ArrayList<>();
+        List<DriverResponse> responseList = new ArrayList<>();
 
         for(Driver driver: existingDrivers){
 
-            DriverResponseDTO driverResponseDTO = new DriverResponseDTO
+            DriverResponse driverResponse = new DriverResponse
                     (
                             driver.getId(),
                             driver.getName(),
                             driver.getLastName(),
-                            driver.getLastName()
+                            driver.getEmail(),
+                            driver.getLicenseNumber(),
+                            driver.getLicenseExpiryDate().toString()
                     );
 
-            responseList.add(driverResponseDTO);
+            responseList.add(driverResponse);
         }
 
         return responseList;
     }
 
     @Override
-    public DriverResponseDTO getById(Long id) {
+    public DriverResponse getById(Long id) {
 
         Driver existingDriver = driverRepository.findById(id).
                 orElseThrow(()-> new NoSuchElementException("Driver with id:" + id + " does not exist in our System"));
 
-        return new DriverResponseDTO
+        return new DriverResponse
                 (
                         existingDriver.getId(),
                         existingDriver.getName(),
                         existingDriver.getLastName(),
-                        existingDriver.getDriverLicense()
+                        existingDriver.getEmail(),
+                        existingDriver.getLicenseNumber(),
+                        existingDriver.getLicenseExpiryDate().toString()
                 );
     }
 
     @Transactional
     @Override
-    public DriverResponseDTO update(DriverRequestDTO driverRequestDTO, Long id) {
+    public DriverResponse update(DriverRequest driverRequest, Long id) {
 
         Driver existingDriver = driverRepository.findById(id).
                 orElseThrow(()-> new NoSuchElementException("Driver with id:" + id + " does not exist in our System"));
 
-        existingDriver.setName(driverRequestDTO.name());
-        existingDriver.setLastName(driverRequestDTO.lastName());
-        existingDriver.setDriverLicense(driverRequestDTO.driverLicense());
+        UserRequest userRequest = driverRequest.userRequest();
+
+        existingDriver.setName(userRequest.name());
+        existingDriver.setLastName(userRequest.lastName());
+        existingDriver.setEmail(userRequest.email());
+        existingDriver.setPassword(userRequest.password());
+
+        existingDriver.setLicenseNumber(driverRequest.licenseNumber());
+        existingDriver.setLicenseExpiryDate(LocalDate.parse(driverRequest.licenseExpiryDate()));
 
         driverRepository.save(existingDriver);
 
-        return new DriverResponseDTO
+        return new DriverResponse
                 (
                         existingDriver.getId(),
                         existingDriver.getName(),
                         existingDriver.getLastName(),
-                        existingDriver.getDriverLicense()
+                        existingDriver.getEmail(),
+                        existingDriver.getLicenseNumber(),
+                        existingDriver.getLicenseExpiryDate().toString()
                 );
     }
 
