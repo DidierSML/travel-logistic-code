@@ -3,7 +3,6 @@ package com.example.travel_logistic_code.service.impl;
 import com.example.travel_logistic_code.dto.request.AdminRequest;
 import com.example.travel_logistic_code.dto.request.UserRequest;
 import com.example.travel_logistic_code.dto.response.AdminResponse;
-import com.example.travel_logistic_code.dto.response.DriverResponse;
 import com.example.travel_logistic_code.entity.Admin;
 import com.example.travel_logistic_code.repository.AdminRepository;
 import com.example.travel_logistic_code.service.AdminService;

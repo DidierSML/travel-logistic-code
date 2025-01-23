@@ -9,13 +9,17 @@ public record DriverResponse(
         String email,
         String licenseNumber,
 
+        String role,
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         String licenseExpiryDate
 ) {
 
     // Constructor personalizado para concatenar
-    public DriverResponse(Long driverId, String name, String lastName, String email, String licenseNumber, String licenseExpiryDate) {
-        this(driverId, fullName(name, lastName), email, licenseNumber,licenseExpiryDate);
+    public DriverResponse(Long driverId, String name, String lastName, String email,
+                          String licenseNumber, String role, String licenseExpiryDate) {
+
+        this(driverId, fullName(name, lastName), email, licenseNumber, role, licenseExpiryDate);
     }
 
     // Método para concatenar el nombre y el apellido
