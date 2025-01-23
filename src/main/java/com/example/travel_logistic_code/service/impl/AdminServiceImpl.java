@@ -4,6 +4,7 @@ import com.example.travel_logistic_code.dto.request.AdminRequest;
 import com.example.travel_logistic_code.dto.request.UserRequest;
 import com.example.travel_logistic_code.dto.response.AdminResponse;
 import com.example.travel_logistic_code.entity.Admin;
+import com.example.travel_logistic_code.entity.enums.RoleType;
 import com.example.travel_logistic_code.repository.AdminRepository;
 import com.example.travel_logistic_code.service.AdminService;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class AdminServiceImpl implements AdminService {
         newAdmin.setLastName(userRequest.lastName());
         newAdmin.setEmail(userRequest.email());
         newAdmin.setPassword(userRequest.password());
+        newAdmin.setRole(RoleType.ADMIN);
 
         newAdmin.setAdminCode(adminRequest.adminCode());
 
@@ -45,6 +47,7 @@ public class AdminServiceImpl implements AdminService {
                         newAdmin.getName(),
                         newAdmin.getLastName(),
                         newAdmin.getEmail(),
+                        newAdmin.getRole().name(),
                         newAdmin.getAdminCode()
                 );
     }
@@ -63,6 +66,7 @@ public class AdminServiceImpl implements AdminService {
                             admin.getName(),
                             admin.getLastName(),
                             admin.getEmail(),
+                            admin.getRole().name(),
                             admin.getAdminCode()
                     );
 
@@ -84,6 +88,7 @@ public class AdminServiceImpl implements AdminService {
                         existingAdministrators.getName(),
                         existingAdministrators.getLastName(),
                         existingAdministrators.getEmail(),
+                        existingAdministrators.getRole().name(),
                         existingAdministrators.getAdminCode()
 
                 );
@@ -92,27 +97,28 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminResponse update(AdminRequest adminRequest, Long id) {
 
-        Admin existingAdministrators = adminRepository.findById(id).
+        Admin existingAdministrator = adminRepository.findById(id).
                 orElseThrow(()-> new NoSuchElementException("Driver with id:" + id + " does not exist in our System"));
 
         UserRequest userRequest = adminRequest.userRequest();
 
-        existingAdministrators.setName(userRequest.name());
-        existingAdministrators.setLastName(userRequest.lastName());
-        existingAdministrators.setEmail(userRequest.email());
-        existingAdministrators.setPassword(userRequest.password());
+        existingAdministrator.setName(userRequest.name());
+        existingAdministrator.setLastName(userRequest.lastName());
+        existingAdministrator.setEmail(userRequest.email());
+        existingAdministrator.setPassword(userRequest.password());
 
-        existingAdministrators.setAdminCode(adminRequest.adminCode());
+        existingAdministrator.setAdminCode(adminRequest.adminCode());
 
-        adminRepository.save(existingAdministrators);
+        adminRepository.save(existingAdministrator);
 
         return new AdminResponse
                 (
-                        existingAdministrators.getId(),
-                        existingAdministrators.getName(),
-                        existingAdministrators.getLastName(),
-                        existingAdministrators.getEmail(),
-                        existingAdministrators.getAdminCode()
+                        existingAdministrator.getId(),
+                        existingAdministrator.getName(),
+                        existingAdministrator.getLastName(),
+                        existingAdministrator.getEmail(),
+                        existingAdministrator.getRole().name(),
+                        existingAdministrator.getAdminCode()
                 );
     }
 
