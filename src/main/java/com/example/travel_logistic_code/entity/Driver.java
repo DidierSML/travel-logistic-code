@@ -29,7 +29,6 @@ public class Driver extends User {
     private List<Reservation> reservations = new ArrayList<>();
 
     //Equals & HashCode
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
