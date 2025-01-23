@@ -4,6 +4,7 @@ import com.example.travel_logistic_code.dto.request.ClientRequest;
 import com.example.travel_logistic_code.dto.response.ClientResponse;
 import com.example.travel_logistic_code.dto.request.UserRequest;
 import com.example.travel_logistic_code.entity.Client;
+import com.example.travel_logistic_code.entity.enums.RoleType;
 import com.example.travel_logistic_code.repository.ClientRepository;
 import com.example.travel_logistic_code.service.ClientService;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class ClientServiceImpl implements ClientService {
         newClient.setLastName(userRequest.lastName());
         newClient.setEmail(userRequest.email());
         newClient.setPassword(userRequest.password());
+        newClient.setRole(RoleType.CLIENT);
 
         newClient.setLoyaltyCardNumber(clientRequest.loyaltyCardNumber());
 
@@ -44,6 +46,7 @@ public class ClientServiceImpl implements ClientService {
                         newClient.getName(),
                         newClient.getLastName(),
                         newClient.getEmail(),
+                        newClient.getRole().name(),
                         newClient.getLoyaltyCardNumber()
                 );
 
@@ -64,6 +67,7 @@ public class ClientServiceImpl implements ClientService {
                             client.getName(),
                             client.getLastName(),
                             client.getEmail(),
+                            client.getRole().name(),
                             client.getLoyaltyCardNumber()
                     );
 
@@ -86,6 +90,7 @@ public class ClientServiceImpl implements ClientService {
                         existingClient.getName(),
                         existingClient.getLastName(),
                         existingClient.getEmail(),
+                        existingClient.getRole().name(),
                         existingClient.getLoyaltyCardNumber()
                 );
 
@@ -116,6 +121,7 @@ public class ClientServiceImpl implements ClientService {
                         existingClient.getName(),
                         existingClient.getLastName(),
                         existingClient.getEmail(),
+                        existingClient.getRole().name(),
                         existingClient.getLoyaltyCardNumber()
                 );
     }
