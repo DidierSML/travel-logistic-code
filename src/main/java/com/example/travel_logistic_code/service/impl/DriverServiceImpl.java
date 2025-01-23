@@ -4,8 +4,10 @@ import com.example.travel_logistic_code.dto.request.DriverRequest;
 import com.example.travel_logistic_code.dto.response.DriverResponse;
 import com.example.travel_logistic_code.dto.request.UserRequest;
 import com.example.travel_logistic_code.entity.Driver;
+import com.example.travel_logistic_code.entity.enums.RoleType;
 import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.service.DriverService;
+import com.nimbusds.oauth2.sdk.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,7 @@ public class DriverServiceImpl implements DriverService {
         newDriver.setLastName(userRequest.lastName());
         newDriver.setEmail(userRequest.email());
         newDriver.setPassword(userRequest.password());
+        newDriver.setRole(RoleType.DRIVER);
 
         newDriver.setLicenseNumber(driverRequest.licenseNumber());
         newDriver.setLicenseExpiryDate(LocalDate.parse(driverRequest.licenseExpiryDate()));
@@ -53,6 +56,7 @@ public class DriverServiceImpl implements DriverService {
                         newDriver.getLastName(),
                         newDriver.getEmail(),
                         newDriver.getLicenseNumber(),
+                        newDriver.getRole().name(),
                         newDriver.getLicenseExpiryDate().toString()
 
                 );
@@ -73,6 +77,7 @@ public class DriverServiceImpl implements DriverService {
                             driver.getLastName(),
                             driver.getEmail(),
                             driver.getLicenseNumber(),
+                            driver.getRole().name(),
                             driver.getLicenseExpiryDate().toString()
                     );
 
@@ -95,6 +100,7 @@ public class DriverServiceImpl implements DriverService {
                         existingDriver.getLastName(),
                         existingDriver.getEmail(),
                         existingDriver.getLicenseNumber(),
+                        existingDriver.getRole().name(),
                         existingDriver.getLicenseExpiryDate().toString()
                 );
     }
@@ -112,6 +118,7 @@ public class DriverServiceImpl implements DriverService {
         existingDriver.setLastName(userRequest.lastName());
         existingDriver.setEmail(userRequest.email());
         existingDriver.setPassword(userRequest.password());
+        existingDriver.setRole(RoleType.DRIVER);
 
         existingDriver.setLicenseNumber(driverRequest.licenseNumber());
         existingDriver.setLicenseExpiryDate(LocalDate.parse(driverRequest.licenseExpiryDate()));
@@ -125,6 +132,7 @@ public class DriverServiceImpl implements DriverService {
                         existingDriver.getLastName(),
                         existingDriver.getEmail(),
                         existingDriver.getLicenseNumber(),
+                        existingDriver.getRole().name(),
                         existingDriver.getLicenseExpiryDate().toString()
                 );
     }
