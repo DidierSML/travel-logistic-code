@@ -1,6 +1,5 @@
 package com.example.travel_logistic_code.dto.response;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public record DriverResponse(
@@ -24,3 +23,4 @@ public record DriverResponse(
         return name + " " + lastName;
     }
 }
+

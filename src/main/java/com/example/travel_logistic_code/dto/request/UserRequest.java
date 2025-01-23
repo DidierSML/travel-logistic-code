@@ -5,8 +5,7 @@ public record UserRequest(
         String name,
         String lastName,
         String email,
-        String password){
-
+        String password ){
 
 }
 
