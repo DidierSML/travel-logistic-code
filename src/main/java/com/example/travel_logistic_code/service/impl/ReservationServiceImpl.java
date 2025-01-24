@@ -162,7 +162,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationResponse update(ReservationRequest reservationRequest, Long id) {
 
         reservationRepository.findById(id)
-                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage()));
+                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage() + id));
 
 
         Client existingClient = clientRepository.findById(reservationRequest.clientId())
