@@ -1,6 +1,7 @@
 package com.example.travel_logistic_code.service;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public interface ReservationService {
     List<ReservationResponse> getAll ();
     ReservationResponse getById (Long id);
     ReservationResponse update (ReservationRequest reservationRequest, Long id);
+    CancelReservationResponse cancel (Long id);
     void delete (Long id);
 
 

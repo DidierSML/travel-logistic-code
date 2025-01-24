@@ -1,6 +1,7 @@
 package com.example.travel_logistic_code.controller;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.service.ReservationService;
 import jakarta.validation.Valid;
@@ -46,6 +47,14 @@ public class ReservationController {
                                        @PathVariable (value = "id") Long id){
 
         return reservationService.update(reservationRequest,id);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CancelReservationResponse cancel (@PathVariable (value = "id") Long id ){
+
+        return reservationService.cancel(id);
+
     }
 
     @DeleteMapping("/{id}")
