@@ -1,5 +1,6 @@
 package com.example.travel_logistic_code.entity;
 
+import com.example.travel_logistic_code.entity.enums.GeneralStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,14 @@ public class Vehicle {
 
     @Column(nullable = false, unique = true)
     private String color;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GeneralStatus status = GeneralStatus.AVAILABLE;
+
+    @OneToOne
+    @JoinColumn(name = "driver_id")
+    private Driver driver;
 
     @OneToMany(mappedBy = "vehicle")
     private List<Reservation> reservations = new ArrayList<>();
