@@ -9,10 +9,8 @@ public record DriverResponse(
         String email,
         String licenseNumber,
         String role,
-
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         String licenseExpiryDate,
-
         String status
 ) {
 

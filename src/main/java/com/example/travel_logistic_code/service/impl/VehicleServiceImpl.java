@@ -3,6 +3,7 @@ package com.example.travel_logistic_code.service.impl;
 import com.example.travel_logistic_code.dto.request.VehicleRequest;
 import com.example.travel_logistic_code.dto.response.VehicleResponse;
 import com.example.travel_logistic_code.entity.Vehicle;
+import com.example.travel_logistic_code.entity.enums.GeneralStatus;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.VehicleService;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class VehicleServiceImpl implements VehicleService {
         newVehicle.setSeats(vehicleRequest.seats());
         newVehicle.setColor(vehicleRequest.color());
 
+        newVehicle.setStatus(GeneralStatus.AVAILABLE);
+
         if(vehicleRepository.existsByLicensePlate(newVehicle.getLicensePlate())){
             throw new NoSuchElementException
                     ("Vehicle with license:" + newVehicle.getLicensePlate() + " already exists in our System");
@@ -49,7 +52,8 @@ public class VehicleServiceImpl implements VehicleService {
                         newVehicle.getModel(),
                         newVehicle.getYear(),
                         newVehicle.getSeats(),
-                        newVehicle.getColor()
+                        newVehicle.getColor(),
+                        newVehicle.getStatus().name()
                 );
 
     }
@@ -71,7 +75,8 @@ public class VehicleServiceImpl implements VehicleService {
                             vehicle.getModel(),
                             vehicle.getYear(),
                             vehicle.getSeats(),
-                            vehicle.getColor()
+                            vehicle.getColor(),
+                            vehicle.getStatus().name()
                     );
 
             responseList.add(vehicleResponse);
@@ -96,7 +101,8 @@ public class VehicleServiceImpl implements VehicleService {
                 existingVehicle.getModel(),
                 existingVehicle.getYear(),
                 existingVehicle.getSeats(),
-                existingVehicle.getColor()
+                existingVehicle.getColor(),
+                existingVehicle.getStatus().name()
         );
     }
 
@@ -115,7 +121,7 @@ public class VehicleServiceImpl implements VehicleService {
         existingVehicle.setSeats(vehicleRequest.seats());
         existingVehicle.setColor(vehicleRequest.color());
 
-        existingVehicle.setSeats(vehicleRequest.seats());
+        existingVehicle.setStatus(GeneralStatus.AVAILABLE);
 
         vehicleRepository.save(existingVehicle);
 
@@ -127,7 +133,8 @@ public class VehicleServiceImpl implements VehicleService {
                 existingVehicle.getModel(),
                 existingVehicle.getYear(),
                 existingVehicle.getSeats(),
-                existingVehicle.getColor()
+                existingVehicle.getColor(),
+                existingVehicle.getStatus().name()
         );
 
     }

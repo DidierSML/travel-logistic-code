@@ -36,8 +36,8 @@ public class DriverServiceImpl implements DriverService {
         newDriver.setLastName(userRequest.lastName());
         newDriver.setEmail(userRequest.email());
         newDriver.setPassword(userRequest.password());
-        newDriver.setRole(RoleType.DRIVER);
 
+        newDriver.setRole(RoleType.DRIVER);
         newDriver.setLicenseNumber(driverRequest.licenseNumber());
         newDriver.setLicenseExpiryDate(LocalDate.parse(driverRequest.licenseExpiryDate()));
         newDriver.setStatus(GeneralStatus.AVAILABLE);
@@ -121,8 +121,8 @@ public class DriverServiceImpl implements DriverService {
         existingDriver.setLastName(userRequest.lastName());
         existingDriver.setEmail(userRequest.email());
         existingDriver.setPassword(userRequest.password());
-        existingDriver.setRole(RoleType.DRIVER);
 
+        existingDriver.setRole(RoleType.DRIVER);
         existingDriver.setLicenseNumber(driverRequest.licenseNumber());
         existingDriver.setLicenseExpiryDate(LocalDate.parse(driverRequest.licenseExpiryDate()));
         existingDriver.setStatus(GeneralStatus.AVAILABLE);
