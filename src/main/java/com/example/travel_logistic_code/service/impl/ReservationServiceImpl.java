@@ -7,6 +7,7 @@ import com.example.travel_logistic_code.entity.Driver;
 import com.example.travel_logistic_code.entity.Reservation;
 import com.example.travel_logistic_code.entity.Vehicle;
 import com.example.travel_logistic_code.entity.enums.GeneralStatus;
+import com.example.travel_logistic_code.entity.enums.ReservationStatus;
 import com.example.travel_logistic_code.exception.TravelNotFoundException;
 import com.example.travel_logistic_code.repository.ClientRepository;
 import com.example.travel_logistic_code.repository.DriverRepository;
@@ -75,6 +76,10 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setStartDate(LocalDateTime.parse(reservationRequest.startDate()));
         newReservation.setEndDate(LocalDateTime.parse(reservationRequest.endDate()));
         newReservation.setCost(reservationRequest.cost());
+        newReservation.setStatus(ReservationStatus.PENDING);
+
+        existingDriver.setStatus(GeneralStatus.OCCUPIED);
+        existingVehicle.setStatus(GeneralStatus.OCCUPIED);
 
         //Saving Entity
         Reservation savedReservation = reservationRepository.save(newReservation);
