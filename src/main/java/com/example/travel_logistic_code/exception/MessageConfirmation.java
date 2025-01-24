@@ -6,7 +6,7 @@ public enum MessageConfirmation {
     CONFIRMED_TRAVEL("your travel has been confirmed successfully"),
     TRAVEL_UPDATED("your travel has been updated successfully"),
     TRAVEL_FETCH_SUCCESS("your travel has been found successfully"),
-    TRAVEL_NOT_FOUND("your travel does not exist in our system");
+    TRAVEL_NOT_FOUND("Reservation not found with id: ");
 
     private final String message;
 
