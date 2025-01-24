@@ -14,7 +14,6 @@ import java.util.Objects;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("Client")
 @Table(name ="clients")
 public class Client extends User{
 

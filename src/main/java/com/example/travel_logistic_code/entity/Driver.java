@@ -15,7 +15,6 @@ import java.util.Objects;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("Driver")
 @Table(name ="drivers")
 public class Driver extends User {
 
