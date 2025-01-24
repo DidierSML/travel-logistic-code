@@ -1,6 +1,7 @@
 package com.example.travel_logistic_code.service.impl;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.entity.Client;
 import com.example.travel_logistic_code.entity.Driver;
@@ -8,7 +9,7 @@ import com.example.travel_logistic_code.entity.Reservation;
 import com.example.travel_logistic_code.entity.Vehicle;
 import com.example.travel_logistic_code.entity.enums.GeneralStatus;
 import com.example.travel_logistic_code.entity.enums.ReservationStatus;
-import com.example.travel_logistic_code.exception.TravelNotFoundException;
+import com.example.travel_logistic_code.exception.ReservationNotFoundException;
 import com.example.travel_logistic_code.repository.ClientRepository;
 import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.repository.ReservationRepository;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.example.travel_logistic_code.exception.MessageConfirmation.TRAVEL_NOT_FOUND;
+import static com.example.travel_logistic_code.exception.MessageConfirmation.RESERVATION_NOT_FOUND;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -76,7 +77,7 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setStartDate(LocalDateTime.parse(reservationRequest.startDate()));
         newReservation.setEndDate(LocalDateTime.parse(reservationRequest.endDate()));
         newReservation.setCost(reservationRequest.cost());
-        newReservation.setStatus(ReservationStatus.PENDING);
+        newReservation.setStatus(ReservationStatus.CONFIRMED);
 
         existingDriver.setStatus(GeneralStatus.OCCUPIED);
         existingVehicle.setStatus(GeneralStatus.OCCUPIED);
@@ -147,7 +148,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationResponse getById(Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id)
-                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage()));
+                .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage()));
 
         return new ReservationResponse
                 (
@@ -174,7 +175,7 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationResponse update(ReservationRequest reservationRequest, Long id) {
 
         reservationRepository.findById(id)
-                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage() + id));
+                .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
 
         Client existingClient = clientRepository.findById(reservationRequest.clientId())
@@ -225,10 +226,40 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public CancelReservationResponse cancel (Long id) {
+
+        Reservation existingReservation = reservationRepository.findById(id)
+                .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
+
+        if (existingReservation.getStatus().equals(ReservationStatus.CANCELLED)){
+            throw new IllegalArgumentException("Reservation is already cancelled");
+        }
+
+        existingReservation.setStatus(ReservationStatus.CANCELLED);
+
+        if(existingReservation.getDriver() != null){
+            existingReservation.getDriver().setStatus(GeneralStatus.AVAILABLE);
+        }
+
+        if(existingReservation.getVehicle() != null){
+            existingReservation.getVehicle().setStatus(GeneralStatus.AVAILABLE);
+        }
+
+        return new CancelReservationResponse
+                (
+                        existingReservation.getId(),
+                        existingReservation.getStatus().name(),
+                        "Reservation has been successfully canceled",
+                        LocalDateTime.now()
+                );
+
+    }
+
+    @Override
     public void delete(Long id) {
 
         reservationRepository.findById(id)
-                .orElseThrow(()-> new TravelNotFoundException(TRAVEL_NOT_FOUND.getMessage()));
+                .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage()));
 
         reservationRepository.deleteById(id);
 
