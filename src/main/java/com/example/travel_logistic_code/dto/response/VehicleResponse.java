@@ -8,6 +8,7 @@ public record VehicleResponse(
             String model,
             int year,
             int seats,
-            String color
+            String color,
+            String status
 ) {
 }
