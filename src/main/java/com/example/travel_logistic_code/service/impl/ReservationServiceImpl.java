@@ -6,6 +6,7 @@ import com.example.travel_logistic_code.entity.Client;
 import com.example.travel_logistic_code.entity.Driver;
 import com.example.travel_logistic_code.entity.Reservation;
 import com.example.travel_logistic_code.entity.Vehicle;
+import com.example.travel_logistic_code.entity.enums.GeneralStatus;
 import com.example.travel_logistic_code.exception.TravelNotFoundException;
 import com.example.travel_logistic_code.repository.ClientRepository;
 import com.example.travel_logistic_code.repository.DriverRepository;
@@ -52,11 +53,17 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(()-> new NoSuchElementException
                         ("Vehicle not found with id:" + reservationRequest.driverId()));
 
+        if(!existingDriver.getStatus().equals(GeneralStatus.AVAILABLE)){
+            throw new IllegalArgumentException("Driver is not available");
+        }
+
         Vehicle existingVehicle = vehicleRepository.findById(reservationRequest.vehicleId())
                 .orElseThrow(()-> new NoSuchElementException
                         ("Vehicle not found with id:" + reservationRequest.vehicleId()));
 
-
+        if (!existingVehicle.getStatus().equals(GeneralStatus.AVAILABLE)) {
+            throw new IllegalArgumentException("Vehicle is not available");
+        }
 
         //From Request to Entity
         Reservation newReservation = new Reservation();
