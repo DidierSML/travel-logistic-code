@@ -1,6 +1,6 @@
 package com.example.travel_logistic_code.entity.enums;
 
-public enum Status {
+public enum GeneralStatus {
 
     AVAILABLE,
     OCCUPIED
