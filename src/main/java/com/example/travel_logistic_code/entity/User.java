@@ -14,7 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name ="users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public abstract class User {
 
     @Id

@@ -13,7 +13,6 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("Admin")
 @Table(name ="Administrators")
 public class Admin extends User{
 
