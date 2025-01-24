@@ -1,5 +1,6 @@
 package com.example.travel_logistic_code.entity;
 
+import com.example.travel_logistic_code.entity.enums.GeneralStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,13 @@ public class Driver extends User {
 
     @Column(nullable = false, unique = true)
     private LocalDate licenseExpiryDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GeneralStatus status = GeneralStatus.AVAILABLE;
+
+    @OneToOne(mappedBy = "driver")
+    private Vehicle vehicle;
 
     @OneToMany(mappedBy = "driver")
     private List<Reservation> reservations = new ArrayList<>();
