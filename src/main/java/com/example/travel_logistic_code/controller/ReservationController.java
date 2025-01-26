@@ -2,7 +2,7 @@ package com.example.travel_logistic_code.controller;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
-import com.example.travel_logistic_code.dto.response.ReservationResponse;
+import com.example.travel_logistic_code.dto.response.SaveReservationResponse;
 import com.example.travel_logistic_code.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,29 +22,29 @@ public class ReservationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReservationResponse save (@Valid @RequestBody ReservationRequest reservationRequest){
+    public SaveReservationResponse save (@Valid @RequestBody ReservationRequest reservationRequest){
 
         return reservationService.save(reservationRequest);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ReservationResponse> getAll (){
+    public List<SaveReservationResponse> getAll (){
 
         return reservationService.getAll();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse getById (@PathVariable (value = "id") Long id){
+    public SaveReservationResponse getById (@PathVariable (value = "id") Long id){
 
         return reservationService.getById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse update (@Valid @RequestBody ReservationRequest reservationRequest,
-                                       @PathVariable (value = "id") Long id){
+    public SaveReservationResponse update (@Valid @RequestBody ReservationRequest reservationRequest,
+                                           @PathVariable (value = "id") Long id){
 
         return reservationService.update(reservationRequest,id);
     }

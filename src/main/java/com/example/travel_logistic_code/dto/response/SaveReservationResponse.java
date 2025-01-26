@@ -2,9 +2,7 @@ package com.example.travel_logistic_code.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDateTime;
-
-public record ReservationResponse (
+public record SaveReservationResponse(
 
                 Long reservationId,
                 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -22,11 +20,11 @@ public record ReservationResponse (
                 String status,
                 String clientFullName) {
 
-    public ReservationResponse (Long reservationId, String reservationDate,
-                                String startDate, String endDate,
-                                Long driverId, String driverName, String driverLastName,
-                                Long vehicleId, String vehicleBrand, String vehicleModel,
-                                Double cost, String status, String clientName, String clientLastName){
+    public SaveReservationResponse(Long reservationId, String reservationDate,
+                                   String startDate, String endDate,
+                                   Long driverId, String driverName, String driverLastName,
+                                   Long vehicleId, String vehicleBrand, String vehicleModel,
+                                   Double cost, String status, String clientName, String clientLastName){
 
         this(reservationId, reservationDate,startDate,endDate,driverId,
                 fullName(driverName,driverLastName),
