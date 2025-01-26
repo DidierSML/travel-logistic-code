@@ -2,7 +2,7 @@ package com.example.travel_logistic_code.service.impl;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
-import com.example.travel_logistic_code.dto.response.ReservationResponse;
+import com.example.travel_logistic_code.dto.response.SaveReservationResponse;
 import com.example.travel_logistic_code.entity.Client;
 import com.example.travel_logistic_code.entity.Driver;
 import com.example.travel_logistic_code.entity.Reservation;
@@ -44,7 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse save (ReservationRequest reservationRequest) {
+    public SaveReservationResponse save (ReservationRequest reservationRequest) {
 
 
         Client existingClient = clientRepository.findById(reservationRequest.clientId())
@@ -86,7 +86,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(newReservation);
 
         //From Entity to ResponseDTO
-        return new ReservationResponse
+        return new SaveReservationResponse
                 (
                         savedReservation.getId(),
                         savedReservation.getReservationDate().toString(),
@@ -109,10 +109,10 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationResponse> getAll() {
+    public List<SaveReservationResponse> getAll() {
 
         List<Reservation> reservationList = reservationRepository.findAll();
-        List<ReservationResponse> responseList = new ArrayList<>();
+        List<SaveReservationResponse> responseList = new ArrayList<>();
 
         if(reservationList.isEmpty()){
             throw new NoSuchElementException("There are no trips registered in your system yet");
@@ -120,7 +120,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         for(Reservation reservation : reservationList){
 
-            ReservationResponse reservationResponse = new ReservationResponse
+            SaveReservationResponse saveReservationResponse = new SaveReservationResponse
                     (
                             reservation.getId(),
                             reservation.getReservationDate().toString(),
@@ -138,19 +138,19 @@ public class ReservationServiceImpl implements ReservationService {
                             reservation.getClient().getLastName()
                     );
 
-            responseList.add(reservationResponse);
+            responseList.add(saveReservationResponse);
         }
 
         return responseList;
     }
 
     @Override
-    public ReservationResponse getById(Long id) {
+    public SaveReservationResponse getById(Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage()));
 
-        return new ReservationResponse
+        return new SaveReservationResponse
                 (
                         existingReservation.getId(),
                         existingReservation.getReservationDate().toString(),
@@ -172,7 +172,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse update(ReservationRequest reservationRequest, Long id) {
+    public SaveReservationResponse update(ReservationRequest reservationRequest, Long id) {
 
         reservationRepository.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
@@ -204,7 +204,7 @@ public class ReservationServiceImpl implements ReservationService {
         //Updating reservation
         Reservation updatedReservation = reservationRepository.save(modifyingReservation);
 
-        return new ReservationResponse
+        return new SaveReservationResponse
                 (
                         updatedReservation.getId(),
                         updatedReservation.getReservationDate().toString(),
