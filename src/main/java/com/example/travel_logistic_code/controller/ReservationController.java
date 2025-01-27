@@ -1,6 +1,7 @@
 package com.example.travel_logistic_code.controller;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.service.ReservationService;
@@ -39,6 +40,14 @@ public class ReservationController {
     public ReservationResponse getById (@PathVariable (value = "id") Long id){
 
         return reservationService.getById(id);
+    }
+
+    @PutMapping("/updateByAmin/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReservationResponse updateByAdmin (@Valid @RequestBody UpdateReservationRequestAdmin reservationRequest,
+                                              @PathVariable (value = "id") Long id){
+
+        return reservationService.updateByAdmin(reservationRequest,id);
     }
 
     @PutMapping("/{id}")
