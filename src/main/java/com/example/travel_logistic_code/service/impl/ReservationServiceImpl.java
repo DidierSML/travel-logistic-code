@@ -1,8 +1,9 @@
 package com.example.travel_logistic_code.service.impl;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
-import com.example.travel_logistic_code.dto.response.SaveReservationResponse;
+import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.entity.Client;
 import com.example.travel_logistic_code.entity.Driver;
 import com.example.travel_logistic_code.entity.Reservation;
@@ -15,6 +16,7 @@ import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.repository.ReservationRepository;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.ReservationService;
+import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public SaveReservationResponse save (ReservationRequest reservationRequest) {
+    public ReservationResponse save (ReservationRequest reservationRequest) {
 
 
         Client existingClient = clientRepository.findById(reservationRequest.clientId())
@@ -86,7 +88,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(newReservation);
 
         //From Entity to ResponseDTO
-        return new SaveReservationResponse
+        return new ReservationResponse
                 (
                         savedReservation.getId(),
                         savedReservation.getReservationDate().toString(),
@@ -101,7 +103,8 @@ public class ReservationServiceImpl implements ReservationService {
                         savedReservation.getCost(),
                         savedReservation.getStatus().name(),
                         savedReservation.getClient().getName(),
-                        savedReservation.getClient().getLastName()
+                        savedReservation.getClient().getLastName(),
+                        "Your reservations has been confirmed successfully"
 
 
                 );
@@ -109,10 +112,10 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<SaveReservationResponse> getAll() {
+    public List<ReservationResponse> getAll() {
 
         List<Reservation> reservationList = reservationRepository.findAll();
-        List<SaveReservationResponse> responseList = new ArrayList<>();
+        List<ReservationResponse> responseList = new ArrayList<>();
 
         if(reservationList.isEmpty()){
             throw new NoSuchElementException("There are no trips registered in your system yet");
@@ -120,7 +123,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         for(Reservation reservation : reservationList){
 
-            SaveReservationResponse saveReservationResponse = new SaveReservationResponse
+            ReservationResponse reservationResponse = new ReservationResponse
                     (
                             reservation.getId(),
                             reservation.getReservationDate().toString(),
@@ -135,22 +138,23 @@ public class ReservationServiceImpl implements ReservationService {
                             reservation.getCost(),
                             reservation.getStatus().name(),
                             reservation.getClient().getName(),
-                            reservation.getClient().getLastName()
+                            reservation.getClient().getLastName(),
+                            "Confirmed reservation"
                     );
 
-            responseList.add(saveReservationResponse);
+            responseList.add(reservationResponse);
         }
 
         return responseList;
     }
 
     @Override
-    public SaveReservationResponse getById(Long id) {
+    public ReservationResponse getById(Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage()));
 
-        return new SaveReservationResponse
+        return new ReservationResponse
                 (
                         existingReservation.getId(),
                         existingReservation.getReservationDate().toString(),
@@ -165,14 +169,105 @@ public class ReservationServiceImpl implements ReservationService {
                         existingReservation.getCost(),
                         existingReservation.getStatus().name(),
                         existingReservation.getClient().getName(),
-                        existingReservation.getClient().getLastName()
+                        existingReservation.getClient().getLastName(),
+                        "Confirmed Reservation"
+
                 );
 
     }
 
     @Transactional
     @Override
-    public SaveReservationResponse update(ReservationRequest reservationRequest, Long id) {
+    public ReservationResponse updateByAdmin (UpdateReservationRequestAdmin reservationRequest, Long id) {
+
+        Reservation existingReservation = reservationRepository.findById(id).
+                orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
+
+        //Status Validations and Assignments for driver,vehicle and Reservation
+        statusValidations(reservationRequest, existingReservation);
+
+
+        //Transforming Strings objects from request to LocalDateTime objects
+        LocalDateTime convertedStartDate = LocalDateTime.parse(reservationRequest.newStartDate());
+        LocalDateTime convertedEndDate = LocalDateTime.parse(reservationRequest.newEndDate());
+
+        //Dates Validations
+        if(convertedStartDate.isAfter(convertedEndDate)){
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
+
+        if(convertedEndDate.isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Start date cannot be in the past");
+        }
+
+        //Assignments for new StartDate and EndDate
+        existingReservation.setReservationDate(LocalDateTime.now());
+        existingReservation.setStartDate(convertedStartDate);
+        existingReservation.setEndDate(convertedEndDate);
+
+        //Saving modifications
+        reservationRepository.save(existingReservation);
+
+        //String updatingDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+
+        return new ReservationResponse
+                (
+                        existingReservation.getId(),
+                        existingReservation.getReservationDate().toString(),
+                        existingReservation.getStartDate().toString(),
+                        existingReservation.getEndDate().toString(),
+                        existingReservation.getDriver().getId(),
+                        existingReservation.getDriver().getName(),
+                        existingReservation.getDriver().getLastName(),
+                        existingReservation.getVehicle().getId(),
+                        existingReservation.getVehicle().getBrand(),
+                        existingReservation.getVehicle().getModel(),
+                        existingReservation.getCost(),
+                        existingReservation.getStatus().name(),
+                        existingReservation.getClient().getName(),
+                        existingReservation.getClient().getLastName(),
+                        "Your reservation has been updated successfully"
+                );
+    }
+
+    private void statusValidations (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
+
+        //Reservation Status Validation
+        if(requestAdmin.newStatus() == ReservationStatus.CANCELLED
+                || existingReservation.getStatus() == ReservationStatus.COMPLETED ){
+            throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
+        }
+
+
+        //Driver Existence and Status Validation
+        Driver driver = driverRepository.findById(requestAdmin.newDriverId()).
+                orElseThrow(()-> new NoSuchElementException("Driver not found"));
+
+        if(driver.getStatus() != GeneralStatus.AVAILABLE){
+            throw new IllegalArgumentException("Sorry, Driver with id: " + requestAdmin.newDriverId() + "is NOT AVAILABLE");
+        }
+        //New Driver assignment Status
+        driver.setStatus(GeneralStatus.OCCUPIED);
+
+
+        //Vehicle existence and status validation
+        Vehicle vehicle = vehicleRepository.findById(requestAdmin.newVehicleId()).
+                orElseThrow(()-> new NoSuchElementException("Vehicle not found"));
+
+        if(vehicle.getStatus() != GeneralStatus.AVAILABLE){
+            throw new IllegalArgumentException("Sorry, Vehicle with id: " + requestAdmin.newDriverId() + "is NOT AVAILABLE");
+        }
+        //New Vehicle assignment Status
+        vehicle.setStatus(GeneralStatus.OCCUPIED);
+
+        //New Reservation assignment Status
+        existingReservation.setStatus(ReservationStatus.CONFIRMED);
+
+    }
+
+    @Transactional
+    @Override
+    public ReservationResponse update(ReservationRequest reservationRequest, Long id) {
 
         reservationRepository.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
@@ -204,7 +299,7 @@ public class ReservationServiceImpl implements ReservationService {
         //Updating reservation
         Reservation updatedReservation = reservationRepository.save(modifyingReservation);
 
-        return new SaveReservationResponse
+        return new ReservationResponse
                 (
                         updatedReservation.getId(),
                         updatedReservation.getReservationDate().toString(),
@@ -219,7 +314,8 @@ public class ReservationServiceImpl implements ReservationService {
                         updatedReservation.getCost(),
                         updatedReservation.getStatus().name(),
                         updatedReservation.getClient().getName(),
-                        updatedReservation.getClient().getLastName()
+                        updatedReservation.getClient().getLastName(),
+                        "Your reservation has been updated successfully"
 
                 );
 

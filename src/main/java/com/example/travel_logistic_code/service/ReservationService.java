@@ -1,17 +1,19 @@
 package com.example.travel_logistic_code.service;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
-import com.example.travel_logistic_code.dto.response.SaveReservationResponse;
+import com.example.travel_logistic_code.dto.response.ReservationResponse;
 
 import java.util.List;
 
 public interface ReservationService {
 
-    SaveReservationResponse save (ReservationRequest reservationRequest);
-    List<SaveReservationResponse> getAll ();
-    SaveReservationResponse getById (Long id);
-    SaveReservationResponse update (ReservationRequest reservationRequest, Long id);
+    ReservationResponse save (ReservationRequest reservationRequest);
+    List<ReservationResponse> getAll ();
+    ReservationResponse getById (Long id);
+    ReservationResponse updateByAdmin (UpdateReservationRequestAdmin reservationRequest, Long id);
+    ReservationResponse update(ReservationRequest reservationRequest, Long id);
     CancelReservationResponse cancel (Long id);
     void delete (Long id);
 
