@@ -21,6 +21,7 @@ import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,9 +77,9 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setClient(existingClient);
         newReservation.setDriver(existingDriver);
         newReservation.setVehicle(existingVehicle);
-        newReservation.setReservationDate(LocalDateTime.parse(reservationRequestBase.reservationDate()));
-        newReservation.setStartDate(LocalDateTime.parse(reservationRequestBase.startDate()));
-        newReservation.setEndDate(LocalDateTime.parse(reservationRequestBase.endDate()));
+        newReservation.setReservationDate(LocalDate.parse(reservationRequestBase.reservationDate()));
+        newReservation.setStartDate(LocalDate.parse(reservationRequestBase.startDate()));
+        newReservation.setEndDate(LocalDate.parse(reservationRequestBase.endDate()));
         newReservation.setCost(reservationRequestBase.cost());
         newReservation.setStatus(ReservationStatus.CONFIRMED);
 
@@ -189,20 +190,20 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         //Transforming Strings objects from request to LocalDateTime objects
-        LocalDateTime convertedStartDate = LocalDateTime.parse(reservationRequest.newStartDate());
-        LocalDateTime convertedEndDate = LocalDateTime.parse(reservationRequest.newEndDate());
+        LocalDate convertedStartDate = LocalDate.parse(reservationRequest.newStartDate());
+        LocalDate convertedEndDate = LocalDate.parse(reservationRequest.newEndDate());
 
         //Dates Validations
         if(convertedStartDate.isAfter(convertedEndDate)){
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
 
-        if(convertedEndDate.isBefore(LocalDateTime.now())){
+        if(convertedEndDate.isBefore(LocalDate.now())){
             throw new IllegalArgumentException("Start date cannot be in the past");
         }
 
         //Assignments for new StartDate and EndDate
-        existingReservation.setReservationDate(LocalDateTime.now());
+        existingReservation.setReservationDate(LocalDate.now());
         existingReservation.setStartDate(convertedStartDate);
         existingReservation.setEndDate(convertedEndDate);
 
@@ -277,20 +278,20 @@ public class ReservationServiceImpl implements ReservationService {
 
 
         //Transforming Strings objects from request to LocalDateTime objects
-        LocalDateTime convertedStartDate = LocalDateTime.parse(reservationRequest.newStartDate());
-        LocalDateTime convertedEndDate = LocalDateTime.parse(reservationRequest.newEndDate());
+        LocalDate convertedStartDate = LocalDate.parse(reservationRequest.newStartDate());
+        LocalDate convertedEndDate = LocalDate.parse(reservationRequest.newEndDate());
 
         //Dates Validations
         if(convertedStartDate.isAfter(convertedEndDate)){
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
 
-        if(convertedEndDate.isBefore(LocalDateTime.now())){
+        if(convertedEndDate.isBefore(LocalDate.now())){
             throw new IllegalArgumentException("Start date cannot be in the past");
         }
 
         //Assignments for new StartDate and EndDate
-        existingReservation.setReservationDate(LocalDateTime.now());
+        existingReservation.setReservationDate(LocalDate.now());
         existingReservation.setStartDate(convertedStartDate);
         existingReservation.setEndDate(convertedEndDate);
 
@@ -373,9 +374,9 @@ public class ReservationServiceImpl implements ReservationService {
         modifyingReservation.setClient(existingClient);
         modifyingReservation.setDriver(existingDriver);
         modifyingReservation.setVehicle(existingVehicle);
-        modifyingReservation.setReservationDate(LocalDateTime.parse(reservationRequestBase.reservationDate()));
-        modifyingReservation.setStartDate(LocalDateTime.parse(reservationRequestBase.startDate()));
-        modifyingReservation.setEndDate(LocalDateTime.parse(reservationRequestBase.endDate()));
+        modifyingReservation.setReservationDate(LocalDate.parse(reservationRequestBase.reservationDate()));
+        modifyingReservation.setStartDate(LocalDate.parse(reservationRequestBase.startDate()));
+        modifyingReservation.setEndDate(LocalDate.parse(reservationRequestBase.endDate()));
         modifyingReservation.setCost(reservationRequestBase.cost());
 
         //Updating reservation
