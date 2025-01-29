@@ -265,6 +265,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
+    @Transactional
     @Override
     public ReservationResponse updateByClient(UpdateReservationRequestClient reservationRequest, Long id) {
 
