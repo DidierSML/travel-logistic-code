@@ -4,7 +4,8 @@ package com.example.travel_logistic_code.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record ReservationRequest(
+public record ReservationRequest
+        (
 
                 @NotNull Long clientId,
                 @NotNull Long driverId,
@@ -14,5 +15,5 @@ public record ReservationRequest(
                 @NotBlank String endDate,
                 @NotNull Double cost
 
-) {
+        ) {
 }

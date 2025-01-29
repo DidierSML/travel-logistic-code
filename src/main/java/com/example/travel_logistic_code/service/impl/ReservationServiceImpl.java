@@ -1,7 +1,8 @@
 package com.example.travel_logistic_code.service.impl;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
-import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
+import com.example.travel_logistic_code.dto.request.UpdateReservationReservationRequestAdmin;
+import com.example.travel_logistic_code.dto.request.UpdateReservationReservationRequestClient;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.entity.Client;
@@ -46,24 +47,24 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse save (ReservationRequest reservationRequest) {
+    public ReservationResponse save (ReservationRequest reservationRequestBase) {
 
 
-        Client existingClient = clientRepository.findById(reservationRequest.clientId())
+        Client existingClient = clientRepository.findById(reservationRequestBase.clientId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Client not found with id:" + reservationRequest.clientId()));
+                        ("Client not found with id:" + reservationRequestBase.clientId()));
 
-        Driver existingDriver = driverRepository.findById(reservationRequest.driverId())
+        Driver existingDriver = driverRepository.findById(reservationRequestBase.driverId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequest.driverId()));
+                        ("Vehicle not found with id:" + reservationRequestBase.driverId()));
 
         if(!existingDriver.getStatus().equals(GeneralStatus.AVAILABLE)){
             throw new IllegalArgumentException("Driver is not available");
         }
 
-        Vehicle existingVehicle = vehicleRepository.findById(reservationRequest.vehicleId())
+        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestBase.vehicleId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequest.vehicleId()));
+                        ("Vehicle not found with id:" + reservationRequestBase.vehicleId()));
 
         if (!existingVehicle.getStatus().equals(GeneralStatus.AVAILABLE)) {
             throw new IllegalArgumentException("Vehicle is not available");
@@ -75,10 +76,10 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setClient(existingClient);
         newReservation.setDriver(existingDriver);
         newReservation.setVehicle(existingVehicle);
-        newReservation.setReservationDate(LocalDateTime.parse(reservationRequest.reservationDate()));
-        newReservation.setStartDate(LocalDateTime.parse(reservationRequest.startDate()));
-        newReservation.setEndDate(LocalDateTime.parse(reservationRequest.endDate()));
-        newReservation.setCost(reservationRequest.cost());
+        newReservation.setReservationDate(LocalDateTime.parse(reservationRequestBase.reservationDate()));
+        newReservation.setStartDate(LocalDateTime.parse(reservationRequestBase.startDate()));
+        newReservation.setEndDate(LocalDateTime.parse(reservationRequestBase.endDate()));
+        newReservation.setCost(reservationRequestBase.cost());
         newReservation.setStatus(ReservationStatus.CONFIRMED);
 
         existingDriver.setStatus(GeneralStatus.OCCUPIED);
@@ -178,7 +179,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse updateByAdmin (UpdateReservationRequestAdmin reservationRequest, Long id) {
+    public ReservationResponse updateByAdmin (UpdateReservationReservationRequestAdmin reservationRequest, Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id).
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
@@ -230,14 +231,13 @@ public class ReservationServiceImpl implements ReservationService {
                 );
     }
 
-    private void statusValidations (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
+    private void statusValidations (UpdateReservationReservationRequestAdmin requestAdmin, Reservation existingReservation){
 
         //Reservation Status Validation
         if(requestAdmin.newStatus() == ReservationStatus.CANCELLED
                 || existingReservation.getStatus() == ReservationStatus.COMPLETED ){
             throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
         }
-
 
         //Driver Existence and Status Validation
         Driver driver = driverRepository.findById(requestAdmin.newDriverId()).
@@ -265,25 +265,106 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
+    @Override
+    public ReservationResponse updateByClient(UpdateReservationReservationRequestClient reservationRequest, Long id) {
+
+        Reservation existingReservation = reservationRepository.findById(id).
+                orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
+
+        //Status Validations and Assignments for driver,vehicle and Reservation
+        statusValidations(reservationRequest, existingReservation);
+
+
+        //Transforming Strings objects from request to LocalDateTime objects
+        LocalDateTime convertedStartDate = LocalDateTime.parse(reservationRequest.newStartDate());
+        LocalDateTime convertedEndDate = LocalDateTime.parse(reservationRequest.newEndDate());
+
+        //Dates Validations
+        if(convertedStartDate.isAfter(convertedEndDate)){
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
+
+        if(convertedEndDate.isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Start date cannot be in the past");
+        }
+
+        //Assignments for new StartDate and EndDate
+        existingReservation.setReservationDate(LocalDateTime.now());
+        existingReservation.setStartDate(convertedStartDate);
+        existingReservation.setEndDate(convertedEndDate);
+
+        //Saving modifications
+        reservationRepository.save(existingReservation);
+
+        return new ReservationResponse
+                (
+                        existingReservation.getId(),
+                        existingReservation.getReservationDate().toString(),
+                        existingReservation.getStartDate().toString(),
+                        existingReservation.getEndDate().toString(),
+                        existingReservation.getDriver().getId(),
+                        existingReservation.getDriver().getName(),
+                        existingReservation.getDriver().getLastName(),
+                        existingReservation.getVehicle().getId(),
+                        existingReservation.getVehicle().getBrand(),
+                        existingReservation.getVehicle().getModel(),
+                        existingReservation.getCost(),
+                        existingReservation.getStatus().name(),
+                        existingReservation.getClient().getName(),
+                        existingReservation.getClient().getLastName(),
+                        "Your reservation has been updated successfully"
+                );
+    }
+
+    private void statusValidations (UpdateReservationReservationRequestClient requestClient, Reservation existingReservation){
+
+        //Driver Existence and Status Validation
+        Driver driver = driverRepository.findById(existingReservation.getDriver().getId()).
+                orElseThrow(()-> new NoSuchElementException("Driver not found"));
+
+        if(driver.getStatus() != GeneralStatus.AVAILABLE){
+            throw new IllegalArgumentException("Sorry, Driver with id: " + existingReservation.getDriver().getId() + "is NOT AVAILABLE");
+        }
+        //New Driver assignment Status
+        driver.setStatus(GeneralStatus.OCCUPIED);
+
+
+        //Vehicle existence and status validation
+        Vehicle vehicle = vehicleRepository.findById(existingReservation.getVehicle().getId()).
+                orElseThrow(()-> new NoSuchElementException("Vehicle not found"));
+
+        if(vehicle.getStatus() != GeneralStatus.AVAILABLE){
+            throw new IllegalArgumentException("Sorry, Vehicle with id: " + existingReservation.getVehicle().getId() + "is NOT AVAILABLE");
+        }
+        //New Vehicle assignment Status
+        vehicle.setStatus(GeneralStatus.OCCUPIED);
+
+        //New Reservation assignment Status
+        existingReservation.setStatus(ReservationStatus.CONFIRMED);
+
+    }
+
+
+
     @Transactional
     @Override
-    public ReservationResponse update(ReservationRequest reservationRequest, Long id) {
+    public ReservationResponse update(ReservationRequest reservationRequestBase, Long id) {
 
         reservationRepository.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
 
-        Client existingClient = clientRepository.findById(reservationRequest.clientId())
+        Client existingClient = clientRepository.findById(reservationRequestBase.clientId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Client not found with id:" + reservationRequest.clientId()));
+                        ("Client not found with id:" + reservationRequestBase.clientId()));
 
-        Driver existingDriver = driverRepository.findById(reservationRequest.driverId())
+        Driver existingDriver = driverRepository.findById(reservationRequestBase.driverId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequest.driverId()));
+                        ("Vehicle not found with id:" + reservationRequestBase.driverId()));
 
-        Vehicle existingVehicle = vehicleRepository.findById(reservationRequest.vehicleId())
+        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestBase.vehicleId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequest.vehicleId()));
+                        ("Vehicle not found with id:" + reservationRequestBase.vehicleId()));
 
         //Modifying reservation
         Reservation modifyingReservation = new Reservation();
@@ -291,10 +372,10 @@ public class ReservationServiceImpl implements ReservationService {
         modifyingReservation.setClient(existingClient);
         modifyingReservation.setDriver(existingDriver);
         modifyingReservation.setVehicle(existingVehicle);
-        modifyingReservation.setReservationDate(LocalDateTime.parse(reservationRequest.reservationDate()));
-        modifyingReservation.setStartDate(LocalDateTime.parse(reservationRequest.startDate()));
-        modifyingReservation.setEndDate(LocalDateTime.parse(reservationRequest.endDate()));
-        modifyingReservation.setCost(reservationRequest.cost());
+        modifyingReservation.setReservationDate(LocalDateTime.parse(reservationRequestBase.reservationDate()));
+        modifyingReservation.setStartDate(LocalDateTime.parse(reservationRequestBase.startDate()));
+        modifyingReservation.setEndDate(LocalDateTime.parse(reservationRequestBase.endDate()));
+        modifyingReservation.setCost(reservationRequestBase.cost());
 
         //Updating reservation
         Reservation updatedReservation = reservationRepository.save(modifyingReservation);
