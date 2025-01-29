@@ -112,8 +112,6 @@ public class ReservationServiceImpl implements ReservationService {
                         savedReservation.getClient().getName(),
                         savedReservation.getClient().getLastName(),
                         "Your reservations has been confirmed successfully"
-
-
                 );
 
     }
@@ -143,7 +141,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<ReservationResponse> responseList = new ArrayList<>();
 
         if(reservationList.isEmpty()){
-            throw new NoSuchElementException("There are no trips registered in your system yet");
+            throw new NoSuchElementException("There are no reservations registered in your system yet");
         }
 
         for(Reservation reservation : reservationList){
@@ -302,8 +300,7 @@ public class ReservationServiceImpl implements ReservationService {
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
         //Status Validations and Assignments for driver,vehicle and Reservation
-        statusValidations(reservationRequest, existingReservation);
-
+        statusValidationsClient(existingReservation);
 
         //Transforming Strings objects from request to LocalDateTime objects
         LocalDate convertedStartDate = LocalDate.parse(reservationRequest.newStartDate());
@@ -347,7 +344,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    private void statusValidations (UpdateReservationRequestClient requestClient, Reservation existingReservation){
+    private void statusValidationsClient (Reservation existingReservation){
 
         //Driver Existence and Status Validation
         Driver driver = driverRepository.findById(existingReservation.getDriver().getId()).
@@ -374,6 +371,10 @@ public class ReservationServiceImpl implements ReservationService {
         existingReservation.setStatus(ReservationStatus.CONFIRMED);
 
     }
+
+//    private void completedStatus (){
+//
+//    }
 
 
 
