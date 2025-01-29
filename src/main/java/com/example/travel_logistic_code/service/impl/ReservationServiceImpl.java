@@ -1,8 +1,8 @@
 package com.example.travel_logistic_code.service.impl;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
-import com.example.travel_logistic_code.dto.request.UpdateReservationReservationRequestAdmin;
-import com.example.travel_logistic_code.dto.request.UpdateReservationReservationRequestClient;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestClient;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.entity.Client;
@@ -179,7 +179,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse updateByAdmin (UpdateReservationReservationRequestAdmin reservationRequest, Long id) {
+    public ReservationResponse updateByAdmin (UpdateReservationRequestAdmin reservationRequest, Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id).
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
@@ -231,7 +231,7 @@ public class ReservationServiceImpl implements ReservationService {
                 );
     }
 
-    private void statusValidations (UpdateReservationReservationRequestAdmin requestAdmin, Reservation existingReservation){
+    private void statusValidations (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
 
         //Reservation Status Validation
         if(requestAdmin.newStatus() == ReservationStatus.CANCELLED
@@ -266,7 +266,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationResponse updateByClient(UpdateReservationReservationRequestClient reservationRequest, Long id) {
+    public ReservationResponse updateByClient(UpdateReservationRequestClient reservationRequest, Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id).
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
@@ -316,7 +316,7 @@ public class ReservationServiceImpl implements ReservationService {
                 );
     }
 
-    private void statusValidations (UpdateReservationReservationRequestClient requestClient, Reservation existingReservation){
+    private void statusValidations (UpdateReservationRequestClient requestClient, Reservation existingReservation){
 
         //Driver Existence and Status Validation
         Driver driver = driverRepository.findById(existingReservation.getDriver().getId()).

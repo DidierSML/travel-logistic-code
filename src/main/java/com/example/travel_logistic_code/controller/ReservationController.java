@@ -1,8 +1,8 @@
 package com.example.travel_logistic_code.controller;
 
 import com.example.travel_logistic_code.dto.request.ReservationRequest;
-import com.example.travel_logistic_code.dto.request.UpdateReservationReservationRequestAdmin;
-import com.example.travel_logistic_code.dto.request.UpdateReservationReservationRequestClient;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
+import com.example.travel_logistic_code.dto.request.UpdateReservationRequestClient;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.service.ReservationService;
@@ -45,7 +45,7 @@ public class ReservationController {
 
     @PutMapping("/updateByAmin/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse updateByAdmin (@Valid @RequestBody UpdateReservationReservationRequestAdmin reservationRequest,
+    public ReservationResponse updateByAdmin (@Valid @RequestBody UpdateReservationRequestAdmin reservationRequest,
                                               @PathVariable (value = "id") Long id){
 
         return reservationService.updateByAdmin(reservationRequest,id);
@@ -53,7 +53,7 @@ public class ReservationController {
 
     @PatchMapping("/updateByClient/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse updateByClient (@Valid @RequestBody UpdateReservationReservationRequestClient reservationRequest,
+    public ReservationResponse updateByClient (@Valid @RequestBody UpdateReservationRequestClient reservationRequest,
                                               @PathVariable (value = "id") Long id){
 
         return reservationService.updateByClient(reservationRequest,id);
