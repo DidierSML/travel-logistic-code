@@ -46,26 +46,27 @@ public class ReservationServiceImpl implements ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
+
     @Transactional
     @Override
-    public ReservationResponse save (ReservationRequest reservationRequestBase) {
+    public ReservationResponse save (ReservationRequest reservationRequest) {
 
 
-        Client existingClient = clientRepository.findById(reservationRequestBase.clientId())
+        Client existingClient = clientRepository.findById(reservationRequest.clientId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Client not found with id:" + reservationRequestBase.clientId()));
+                        ("Client not found with id:" + reservationRequest.clientId()));
 
-        Driver existingDriver = driverRepository.findById(reservationRequestBase.driverId())
+        Driver existingDriver = driverRepository.findById(reservationRequest.driverId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequestBase.driverId()));
+                        ("Vehicle not found with id:" + reservationRequest.driverId()));
 
         if(!existingDriver.getStatus().equals(GeneralStatus.AVAILABLE)){
             throw new IllegalArgumentException("Driver is not available");
         }
 
-        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestBase.vehicleId())
+        Vehicle existingVehicle = vehicleRepository.findById(reservationRequest.vehicleId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequestBase.vehicleId()));
+                        ("Vehicle not found with id:" + reservationRequest.vehicleId()));
 
         if (!existingVehicle.getStatus().equals(GeneralStatus.AVAILABLE)) {
             throw new IllegalArgumentException("Vehicle is not available");
@@ -77,10 +78,14 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setClient(existingClient);
         newReservation.setDriver(existingDriver);
         newReservation.setVehicle(existingVehicle);
-        newReservation.setReservationDate(LocalDate.parse(reservationRequestBase.reservationDate()));
-        newReservation.setStartDate(LocalDate.parse(reservationRequestBase.startDate()));
-        newReservation.setEndDate(LocalDate.parse(reservationRequestBase.endDate()));
-        newReservation.setCost(reservationRequestBase.cost());
+
+        //Transforming Strings objects from request to LocalDateTime objects & validations
+        datesValidations(reservationRequest);
+
+        newReservation.setReservationDate(LocalDate.parse(reservationRequest.reservationDate()));
+        newReservation.setStartDate(LocalDate.parse(reservationRequest.startDate()));
+        newReservation.setEndDate(LocalDate.parse(reservationRequest.endDate()));
+        newReservation.setCost(reservationRequest.cost());
         newReservation.setStatus(ReservationStatus.CONFIRMED);
 
         existingDriver.setStatus(GeneralStatus.OCCUPIED);
@@ -112,6 +117,24 @@ public class ReservationServiceImpl implements ReservationService {
                 );
 
     }
+
+
+    private void datesValidations (ReservationRequest reservationRequest){
+
+        //Transforming Strings objects from request to LocalDateTime objects
+        LocalDate convertedStartDate = LocalDate.parse(reservationRequest.startDate());
+        LocalDate convertedEndDate = LocalDate.parse(reservationRequest.endDate());
+
+        //Dates Validations
+        if(convertedStartDate.isAfter(convertedEndDate)){
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
+
+        if(convertedEndDate.isBefore(LocalDate.now())){
+            throw new IllegalArgumentException("Start date cannot be in the past");
+        }
+    }
+
 
     @Override
     public List<ReservationResponse> getAll() {
@@ -150,6 +173,7 @@ public class ReservationServiceImpl implements ReservationService {
         return responseList;
     }
 
+
     @Override
     public ReservationResponse getById(Long id) {
 
@@ -177,6 +201,7 @@ public class ReservationServiceImpl implements ReservationService {
                 );
 
     }
+
 
     @Transactional
     @Override
@@ -232,6 +257,7 @@ public class ReservationServiceImpl implements ReservationService {
                 );
     }
 
+
     private void statusValidations (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
 
         //Reservation Status Validation
@@ -261,10 +287,12 @@ public class ReservationServiceImpl implements ReservationService {
         //New Vehicle assignment Status
         vehicle.setStatus(GeneralStatus.OCCUPIED);
 
+
         //New Reservation assignment Status
         existingReservation.setStatus(ReservationStatus.CONFIRMED);
 
     }
+
 
     @Transactional
     @Override
@@ -317,6 +345,7 @@ public class ReservationServiceImpl implements ReservationService {
                         "Your reservation has been updated successfully"
                 );
     }
+
 
     private void statusValidations (UpdateReservationRequestClient requestClient, Reservation existingReservation){
 
@@ -404,6 +433,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
+
     @Override
     public CancelReservationResponse cancel (Long id) {
 
@@ -433,6 +463,7 @@ public class ReservationServiceImpl implements ReservationService {
                 );
 
     }
+
 
     @Override
     public void delete(Long id) {
