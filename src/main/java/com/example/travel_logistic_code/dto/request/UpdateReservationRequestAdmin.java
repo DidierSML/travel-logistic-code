@@ -2,7 +2,7 @@ package com.example.travel_logistic_code.dto.request;
 
 import com.example.travel_logistic_code.entity.enums.ReservationStatus;
 
-public record UpdateReservationReservationRequestAdmin
+public record UpdateReservationRequestAdmin
         (
                 String newStartDate,
                 String newEndDate,

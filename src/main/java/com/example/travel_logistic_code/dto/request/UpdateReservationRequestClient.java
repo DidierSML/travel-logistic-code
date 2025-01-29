@@ -1,7 +1,7 @@
 package com.example.travel_logistic_code.dto.request;
 
 
-public record UpdateReservationReservationRequestClient
+public record UpdateReservationRequestClient
         (
                 String newStartDate,
                 String newEndDate
