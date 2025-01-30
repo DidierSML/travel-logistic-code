@@ -1,8 +1,9 @@
 package com.example.travel_logistic_code.service.impl;
 
-import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.request.ConversionToLocalDate;
+import com.example.travel_logistic_code.dto.request.ReservationRequestSave;
 import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
-import com.example.travel_logistic_code.dto.request.UpdateReservationRequestClient;
+import com.example.travel_logistic_code.dto.request.ReservationRequestDates;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.entity.Client;
@@ -17,7 +18,6 @@ import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.repository.ReservationRepository;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.ReservationService;
-import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,24 +49,24 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse save (ReservationRequest reservationRequest) {
+    public ReservationResponse save (ReservationRequestSave reservationRequestSave) {
 
 
-        Client existingClient = clientRepository.findById(reservationRequest.clientId())
+        Client existingClient = clientRepository.findById(reservationRequestSave.clientId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Client not found with id:" + reservationRequest.clientId()));
+                        ("Client not found with id:" + reservationRequestSave.clientId()));
 
-        Driver existingDriver = driverRepository.findById(reservationRequest.driverId())
+        Driver existingDriver = driverRepository.findById(reservationRequestSave.driverId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequest.driverId()));
+                        ("Vehicle not found with id:" + reservationRequestSave.driverId()));
 
         if(!existingDriver.getStatus().equals(GeneralStatus.AVAILABLE)){
             throw new IllegalArgumentException("Driver is not available");
         }
 
-        Vehicle existingVehicle = vehicleRepository.findById(reservationRequest.vehicleId())
+        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestSave.vehicleId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequest.vehicleId()));
+                        ("Vehicle not found with id:" + reservationRequestSave.vehicleId()));
 
         if (!existingVehicle.getStatus().equals(GeneralStatus.AVAILABLE)) {
             throw new IllegalArgumentException("Vehicle is not available");
@@ -80,12 +80,16 @@ public class ReservationServiceImpl implements ReservationService {
         newReservation.setVehicle(existingVehicle);
 
         //Transforming Strings objects from request to LocalDateTime objects & validations
-        datesValidations(reservationRequest);
+        ConversionToLocalDate validatedDates = datesValidations(reservationRequestSave.reservationRequestDates());
 
-        newReservation.setReservationDate(LocalDate.parse(reservationRequest.reservationDate()));
-        newReservation.setStartDate(LocalDate.parse(reservationRequest.startDate()));
-        newReservation.setEndDate(LocalDate.parse(reservationRequest.endDate()));
-        newReservation.setCost(reservationRequest.cost());
+        //Assignment of Reservation Date
+        newReservation.setReservationDate(LocalDate.parse(reservationRequestSave.reservationDate()));
+
+        //Assignments for new StartDate and EndDate
+        newReservation.setStartDate(validatedDates.startDate());
+        newReservation.setStartDate(validatedDates.endDate());
+
+        newReservation.setCost(reservationRequestSave.cost());
         newReservation.setStatus(ReservationStatus.CONFIRMED);
 
         existingDriver.setStatus(GeneralStatus.OCCUPIED);
@@ -117,11 +121,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    private void datesValidations (ReservationRequest reservationRequest){
+    private ConversionToLocalDate datesValidations (ReservationRequestDates reservationRequestDates){
 
         //Transforming Strings objects from request to LocalDateTime objects
-        LocalDate convertedStartDate = LocalDate.parse(reservationRequest.startDate());
-        LocalDate convertedEndDate = LocalDate.parse(reservationRequest.endDate());
+        LocalDate convertedStartDate = LocalDate.parse(reservationRequestDates.startDate());
+        LocalDate convertedEndDate = LocalDate.parse(reservationRequestDates.endDate());
 
         //Dates Validations
         if(convertedStartDate.isAfter(convertedEndDate)){
@@ -131,6 +135,8 @@ public class ReservationServiceImpl implements ReservationService {
         if(convertedEndDate.isBefore(LocalDate.now())){
             throw new IllegalArgumentException("Start date cannot be in the past");
         }
+
+        return new ConversionToLocalDate (convertedStartDate,convertedEndDate);
     }
 
 
@@ -209,26 +215,18 @@ public class ReservationServiceImpl implements ReservationService {
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
         //Status Validations and Assignments for driver,vehicle and Reservation
-        statusValidations(reservationRequest, existingReservation);
+        statusValidations(existingReservation);
 
+        //Transforming Strings objects from request to LocalDateTime objects & validations
+        ConversionToLocalDate validatedDates = datesValidations(reservationRequest.reservationRequestDates());
 
-        //Transforming Strings objects from request to LocalDateTime objects
-        LocalDate convertedStartDate = LocalDate.parse(reservationRequest.newStartDate());
-        LocalDate convertedEndDate = LocalDate.parse(reservationRequest.newEndDate());
-
-        //Dates Validations
-        if(convertedStartDate.isAfter(convertedEndDate)){
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
-
-        if(convertedEndDate.isBefore(LocalDate.now())){
-            throw new IllegalArgumentException("Start date cannot be in the past");
-        }
+        //Updating Date
+        existingReservation.setReservationDate(LocalDate.now());
 
         //Assignments for new StartDate and EndDate
-        existingReservation.setReservationDate(LocalDate.now());
-        existingReservation.setStartDate(convertedStartDate);
-        existingReservation.setEndDate(convertedEndDate);
+        existingReservation.setStartDate(validatedDates.startDate());
+        existingReservation.setStartDate(validatedDates.endDate());
+
 
         //Saving modifications
         reservationRepository.save(existingReservation);
@@ -256,13 +254,13 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    private void statusValidations (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
+    private void statusValidationsTest (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
 
-        //Reservation Status Validation
-        if(requestAdmin.newStatus() == ReservationStatus.CANCELLED
-                || existingReservation.getStatus() == ReservationStatus.COMPLETED ){
-            throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
-        }
+//        //Reservation Status Validation
+//        if(requestAdmin.newStatus() == ReservationStatus.CANCELLED
+//                || existingReservation.getStatus() == ReservationStatus.COMPLETED ){
+//            throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
+//        }
 
         //Driver Existence and Status Validation
         Driver driver = driverRepository.findById(requestAdmin.newDriverId()).
@@ -294,31 +292,24 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse updateByClient(UpdateReservationRequestClient reservationRequest, Long id) {
+    public ReservationResponse updateByClient(ReservationRequestDates reservationRequest, Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id).
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
         //Status Validations and Assignments for driver,vehicle and Reservation
-        statusValidationsClient(existingReservation);
+        statusValidations(existingReservation);
 
-        //Transforming Strings objects from request to LocalDateTime objects
-        LocalDate convertedStartDate = LocalDate.parse(reservationRequest.newStartDate());
-        LocalDate convertedEndDate = LocalDate.parse(reservationRequest.newEndDate());
+        //Transforming Strings objects from request to LocalDateTime objects & validations
+        ConversionToLocalDate validatedDates = datesValidations(reservationRequest);
 
-        //Dates Validations
-        if(convertedStartDate.isAfter(convertedEndDate)){
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
-
-        if(convertedEndDate.isBefore(LocalDate.now())){
-            throw new IllegalArgumentException("Start date cannot be in the past");
-        }
+        //Updating Reservation Date
+        existingReservation.setReservationDate(LocalDate.now());
 
         //Assignments for new StartDate and EndDate
-        existingReservation.setReservationDate(LocalDate.now());
-        existingReservation.setStartDate(convertedStartDate);
-        existingReservation.setEndDate(convertedEndDate);
+        existingReservation.setStartDate(validatedDates.startDate());
+        existingReservation.setStartDate(validatedDates.endDate());
+
 
         //Saving modifications
         reservationRepository.save(existingReservation);
@@ -344,7 +335,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    private void statusValidationsClient (Reservation existingReservation){
+    private void statusValidations (Reservation existingReservation){
 
         //Driver Existence and Status Validation
         Driver driver = driverRepository.findById(existingReservation.getDriver().getId()).
@@ -380,23 +371,23 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Transactional
     @Override
-    public ReservationResponse update(ReservationRequest reservationRequestBase, Long id) {
+    public ReservationResponse update(ReservationRequestSave reservationRequestSaveBase, Long id) {
 
         reservationRepository.findById(id)
                 .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
 
-        Client existingClient = clientRepository.findById(reservationRequestBase.clientId())
+        Client existingClient = clientRepository.findById(reservationRequestSaveBase.clientId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Client not found with id:" + reservationRequestBase.clientId()));
+                        ("Client not found with id:" + reservationRequestSaveBase.clientId()));
 
-        Driver existingDriver = driverRepository.findById(reservationRequestBase.driverId())
+        Driver existingDriver = driverRepository.findById(reservationRequestSaveBase.driverId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequestBase.driverId()));
+                        ("Vehicle not found with id:" + reservationRequestSaveBase.driverId()));
 
-        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestBase.vehicleId())
+        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestSaveBase.vehicleId())
                 .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequestBase.vehicleId()));
+                        ("Vehicle not found with id:" + reservationRequestSaveBase.vehicleId()));
 
         //Modifying reservation
         Reservation modifyingReservation = new Reservation();
@@ -404,10 +395,10 @@ public class ReservationServiceImpl implements ReservationService {
         modifyingReservation.setClient(existingClient);
         modifyingReservation.setDriver(existingDriver);
         modifyingReservation.setVehicle(existingVehicle);
-        modifyingReservation.setReservationDate(LocalDate.parse(reservationRequestBase.reservationDate()));
-        modifyingReservation.setStartDate(LocalDate.parse(reservationRequestBase.startDate()));
-        modifyingReservation.setEndDate(LocalDate.parse(reservationRequestBase.endDate()));
-        modifyingReservation.setCost(reservationRequestBase.cost());
+        modifyingReservation.setReservationDate(LocalDate.parse(reservationRequestSaveBase.reservationDate()));
+        modifyingReservation.setStartDate(LocalDate.parse(reservationRequestSaveBase.reservationRequestDates().startDate()));
+        modifyingReservation.setEndDate(LocalDate.parse(reservationRequestSaveBase.reservationRequestDates().endDate()));
+        modifyingReservation.setCost(reservationRequestSaveBase.cost());
 
         //Updating reservation
         Reservation updatedReservation = reservationRepository.save(modifyingReservation);

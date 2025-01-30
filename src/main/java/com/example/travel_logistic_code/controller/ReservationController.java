@@ -1,8 +1,8 @@
 package com.example.travel_logistic_code.controller;
 
-import com.example.travel_logistic_code.dto.request.ReservationRequest;
+import com.example.travel_logistic_code.dto.request.ReservationRequestSave;
 import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
-import com.example.travel_logistic_code.dto.request.UpdateReservationRequestClient;
+import com.example.travel_logistic_code.dto.request.ReservationRequestDates;
 import com.example.travel_logistic_code.dto.response.CancelReservationResponse;
 import com.example.travel_logistic_code.dto.response.ReservationResponse;
 import com.example.travel_logistic_code.service.ReservationService;
@@ -24,9 +24,9 @@ public class ReservationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReservationResponse save (@Valid @RequestBody ReservationRequest reservationRequestBase){
+    public ReservationResponse save (@Valid @RequestBody ReservationRequestSave reservationRequestSaveBase){
 
-        return reservationService.save(reservationRequestBase);
+        return reservationService.save(reservationRequestSaveBase);
     }
 
     @GetMapping
@@ -53,7 +53,7 @@ public class ReservationController {
 
     @PatchMapping("/updateByClient/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse updateByClient (@Valid @RequestBody UpdateReservationRequestClient reservationRequest,
+    public ReservationResponse updateByClient (@Valid @RequestBody ReservationRequestDates reservationRequest,
                                               @PathVariable (value = "id") Long id){
 
         return reservationService.updateByClient(reservationRequest,id);
@@ -61,10 +61,10 @@ public class ReservationController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse update (@Valid @RequestBody ReservationRequest reservationRequestBase,
+    public ReservationResponse update (@Valid @RequestBody ReservationRequestSave reservationRequestSaveBase,
                                        @PathVariable (value = "id") Long id){
 
-        return reservationService.update(reservationRequestBase,id);
+        return reservationService.update(reservationRequestSaveBase,id);
     }
 
     @PatchMapping("/{id}")

@@ -4,8 +4,7 @@ import com.example.travel_logistic_code.entity.enums.ReservationStatus;
 
 public record UpdateReservationRequestAdmin
         (
-                String newStartDate,
-                String newEndDate,
+                ReservationRequestDates reservationRequestDates,
                 Long newDriverId,
                 Long newVehicleId,
                 ReservationStatus newStatus
