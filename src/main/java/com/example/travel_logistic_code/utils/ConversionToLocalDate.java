@@ -1,4 +1,4 @@
-package com.example.travel_logistic_code.dto.request;
+package com.example.travel_logistic_code.utils;
 
 import java.time.LocalDate;
 

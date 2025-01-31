@@ -15,7 +15,6 @@ public interface ReservationService {
     ReservationResponse getById (Long id);
     ReservationResponse updateByAdmin (UpdateReservationRequestAdmin reservationRequest, Long id);
     ReservationResponse updateByClient (ReservationRequestDates reservationRequest, Long id);
-    ReservationResponse update(ReservationRequestSave reservationRequestSaveBase, Long id);
     CancelReservationResponse cancel (Long id);
     void delete (Long id);
 
