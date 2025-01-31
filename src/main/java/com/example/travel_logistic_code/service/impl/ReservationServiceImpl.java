@@ -1,6 +1,6 @@
 package com.example.travel_logistic_code.service.impl;
 
-import com.example.travel_logistic_code.dto.request.ConversionToLocalDate;
+import com.example.travel_logistic_code.utils.ConversionToLocalDate;
 import com.example.travel_logistic_code.dto.request.ReservationRequestSave;
 import com.example.travel_logistic_code.dto.request.UpdateReservationRequestAdmin;
 import com.example.travel_logistic_code.dto.request.ReservationRequestDates;
@@ -18,6 +18,7 @@ import com.example.travel_logistic_code.repository.DriverRepository;
 import com.example.travel_logistic_code.repository.ReservationRepository;
 import com.example.travel_logistic_code.repository.VehicleRepository;
 import com.example.travel_logistic_code.service.ReservationService;
+import com.sun.jdi.request.InvalidRequestStateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -214,7 +215,12 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation existingReservation = reservationRepository.findById(id).
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
 
-        //Status Validations and Assignments for driver,vehicle and Reservation
+        //Reservation Status Validation
+        if(existingReservation.getStatus() != ReservationStatus.CONFIRMED){
+            throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
+        }
+
+        //Status Validations and Assignments for Driver,Vehicle and Reservation
         statusValidations(existingReservation);
 
         //Transforming Strings objects from request to LocalDateTime objects & validations
@@ -254,48 +260,17 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    private void statusValidationsTest (UpdateReservationRequestAdmin requestAdmin, Reservation existingReservation){
-
-//        //Reservation Status Validation
-//        if(requestAdmin.newStatus() == ReservationStatus.CANCELLED
-//                || existingReservation.getStatus() == ReservationStatus.COMPLETED ){
-//            throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
-//        }
-
-        //Driver Existence and Status Validation
-        Driver driver = driverRepository.findById(requestAdmin.newDriverId()).
-                orElseThrow(()-> new NoSuchElementException("Driver not found"));
-
-        if(driver.getStatus() != GeneralStatus.AVAILABLE){
-            throw new IllegalArgumentException("Sorry, Driver with id: " + requestAdmin.newDriverId() + "is NOT AVAILABLE");
-        }
-        //New Driver assignment Status
-        driver.setStatus(GeneralStatus.OCCUPIED);
-
-
-        //Vehicle existence and status validation
-        Vehicle vehicle = vehicleRepository.findById(requestAdmin.newVehicleId()).
-                orElseThrow(()-> new NoSuchElementException("Vehicle not found"));
-
-        if(vehicle.getStatus() != GeneralStatus.AVAILABLE){
-            throw new IllegalArgumentException("Sorry, Vehicle with id: " + requestAdmin.newDriverId() + "is NOT AVAILABLE");
-        }
-        //New Vehicle assignment Status
-        vehicle.setStatus(GeneralStatus.OCCUPIED);
-
-
-        //New Reservation assignment Status
-        existingReservation.setStatus(ReservationStatus.CONFIRMED);
-
-    }
-
-
     @Transactional
     @Override
     public ReservationResponse updateByClient(ReservationRequestDates reservationRequest, Long id) {
 
         Reservation existingReservation = reservationRepository.findById(id).
                 orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
+
+        //Reservation Status Validation
+        if(existingReservation.getStatus() != ReservationStatus.CONFIRMED){
+            throw new InvalidRequestStateException("Status CANCELLED or COMPLETED can not be modified");
+        }
 
         //Status Validations and Assignments for driver,vehicle and Reservation
         statusValidations(existingReservation);
@@ -366,64 +341,6 @@ public class ReservationServiceImpl implements ReservationService {
 //    private void completedStatus (){
 //
 //    }
-
-
-
-    @Transactional
-    @Override
-    public ReservationResponse update(ReservationRequestSave reservationRequestSaveBase, Long id) {
-
-        reservationRepository.findById(id)
-                .orElseThrow(()-> new ReservationNotFoundException(RESERVATION_NOT_FOUND.getMessage() + id));
-
-
-        Client existingClient = clientRepository.findById(reservationRequestSaveBase.clientId())
-                .orElseThrow(()-> new NoSuchElementException
-                        ("Client not found with id:" + reservationRequestSaveBase.clientId()));
-
-        Driver existingDriver = driverRepository.findById(reservationRequestSaveBase.driverId())
-                .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequestSaveBase.driverId()));
-
-        Vehicle existingVehicle = vehicleRepository.findById(reservationRequestSaveBase.vehicleId())
-                .orElseThrow(()-> new NoSuchElementException
-                        ("Vehicle not found with id:" + reservationRequestSaveBase.vehicleId()));
-
-        //Modifying reservation
-        Reservation modifyingReservation = new Reservation();
-
-        modifyingReservation.setClient(existingClient);
-        modifyingReservation.setDriver(existingDriver);
-        modifyingReservation.setVehicle(existingVehicle);
-        modifyingReservation.setReservationDate(LocalDate.parse(reservationRequestSaveBase.reservationDate()));
-        modifyingReservation.setStartDate(LocalDate.parse(reservationRequestSaveBase.reservationRequestDates().startDate()));
-        modifyingReservation.setEndDate(LocalDate.parse(reservationRequestSaveBase.reservationRequestDates().endDate()));
-        modifyingReservation.setCost(reservationRequestSaveBase.cost());
-
-        //Updating reservation
-        Reservation updatedReservation = reservationRepository.save(modifyingReservation);
-
-        return new ReservationResponse
-                (
-                        updatedReservation.getId(),
-                        updatedReservation.getReservationDate().toString(),
-                        updatedReservation.getStartDate().toString(),
-                        updatedReservation.getEndDate().toString(),
-                        updatedReservation.getDriver().getId(),
-                        updatedReservation.getDriver().getName(),
-                        updatedReservation.getDriver().getLastName(),
-                        updatedReservation.getVehicle().getId(),
-                        updatedReservation.getVehicle().getBrand(),
-                        updatedReservation.getVehicle().getModel(),
-                        updatedReservation.getCost(),
-                        updatedReservation.getStatus().name(),
-                        updatedReservation.getClient().getName(),
-                        updatedReservation.getClient().getLastName(),
-                        "Your reservation has been updated successfully"
-
-                );
-
-    }
 
 
     @Override

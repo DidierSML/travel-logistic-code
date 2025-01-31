@@ -59,14 +59,6 @@ public class ReservationController {
         return reservationService.updateByClient(reservationRequest,id);
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ReservationResponse update (@Valid @RequestBody ReservationRequestSave reservationRequestSaveBase,
-                                       @PathVariable (value = "id") Long id){
-
-        return reservationService.update(reservationRequestSaveBase,id);
-    }
-
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CancelReservationResponse cancel (@PathVariable (value = "id") Long id ){
