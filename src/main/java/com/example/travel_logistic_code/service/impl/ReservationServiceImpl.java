@@ -202,7 +202,6 @@ public class ReservationServiceImpl implements ReservationService {
                         existingReservation.getClient().getName(),
                         existingReservation.getClient().getLastName(),
                         "Confirmed Reservation"
-
                 );
 
     }
