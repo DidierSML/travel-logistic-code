@@ -1,10 +1,11 @@
 package com.example.travel_logistic_code.dto.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 public record DriverRequest(
 
-        @NotBlank UserRequest userRequest,
+        @Valid UserRequest userRequest,
 
         @NotBlank String licenseNumber,
 

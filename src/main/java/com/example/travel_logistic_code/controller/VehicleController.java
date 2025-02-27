@@ -5,7 +5,7 @@ import com.example.travel_logistic_code.dto.response.VehicleResponse;
 import com.example.travel_logistic_code.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class VehicleController {
 
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public VehicleResponse save (@Valid @RequestBody VehicleRequest vehicleRequest){
 
@@ -31,7 +31,7 @@ public class VehicleController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    //@PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleResponse> getAll (){
 
@@ -39,7 +39,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    //@PreAuthorize("hasAnyRole('ADMIN','USER')")
     @ResponseStatus(HttpStatus.OK)
     public VehicleResponse getById (@PathVariable (value = "id") Long id){
 
@@ -47,7 +47,7 @@ public class VehicleController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public VehicleResponse update (@Valid @RequestBody VehicleRequest vehicleRequest,
                                    @PathVariable (value = "id") Long id){
@@ -57,7 +57,7 @@ public class VehicleController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete (@PathVariable (value = "id") Long id){
 
